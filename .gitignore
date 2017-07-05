@@ -77,3 +77,17 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+*.xml
+*.tlog
+*.log
+*.rc
+Projekt1.vcxproj
+*.filters
+Projekt1.vcxproj.user
+*.aps
+Release/Projekt1.res
+*.pdb
+Debug/Projekt1.res
+*.idb
+x64/Debug/Projekt1.res
+*.config
