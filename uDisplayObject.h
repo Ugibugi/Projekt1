@@ -1,25 +1,32 @@
 #pragma once
-#include "uSurface.h"
+#include "uResource.h"
+
 namespace utl
 {
-	typedef SDL_Point uXY;
-	typedef SDL_Rect Rect;
+	typedef uResource<SDL_Surface, uResourceManager::loadImage, SDL_FreeSurface>::Handle uImage;
+
 	/*TODO update to use class uResource*/
-	/*class uDisplayObject
+	class uDisplayObject
 	{
 	public:
-		uDisplayObject(std::string texName);
-		void load();
-		void load(SDL_Renderer* renderer);
-		void unload();
-		SDL_Texture* getTexture();
+		uDisplayObject() {}
+		uDisplayObject(std::string texName) :srcImage(texName){}
+		inline SDL_Texture* getTexture() { return _texture; }
+
+
+
+		inline SDL_Rect* getTarget() { return &_target; }
+		inline void setXY(int x, int y) { _target.x = x; _target.y = y; }
+		inline void setWH(int w, int h) { _target.w = w; _target.h = h; }
+		inline void setTarget(SDL_Rect rect) { _target = rect; }
+
 		virtual ~uDisplayObject();
 
-		uXY coords;
+		SDL_Texture* _texture;
+		uImage srcImage;
 	private:
-		uSurface _softwareTexture;	//stored in RAM
-		SDL_Texture* _texture;		//stored in Graphic card
-		bool _isLoaded;				//is loaded as as texture to SDL_Renderer?
-
-	};*/
+		
+		SDL_Rect _target;
+		
+	};
 }

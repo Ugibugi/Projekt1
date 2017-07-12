@@ -6,6 +6,7 @@
 
 #include "uFunctionStorage.h"
 #include "uResource.h"
+#include "uDisplayManager.h"
 #include <tuple>
 void logSDLError(std::ostream &os, const std::string &msg)
 {
@@ -40,21 +41,25 @@ int main(int argc, char* argv[])
 		SDL_DestroyWindow(Game_Window);
 	}
 #pragma endregion
-
 	/*utl::uFunctionStorage test_storage;
 	uint32_t TEST_FUNC = 1;
 
 	test_storage.addCall<int, double>(TEST_FUNC,test,4, 5.1);
 	test_storage.Call(TEST_FUNC);*/
 
-	//TODO fix custom types
-	utl::uResource<SDL_Surface, utl::uResourceManager::loadImage, SDL_FreeSurface>::Handle image;
-	image.set("420.jpg");
-	image.get();
+
+	utl::uDisplayManager::init(Game_Window, Game_Renderer);
+	utl::uDisplayObject test;
+	test.srcImage.set("420.jpg");
+	test.srcImage.load();
+	utl::uDisplayManager::loadObject(&test);
+	
 	SDL_Event e;
 	bool quit = false;
+
 	while (!quit)
 	{
+#pragma region Event Loop
 		while (SDL_PollEvent(&e) != 0)
 		{
 			if (e.type == SDL_QUIT)
@@ -77,16 +82,13 @@ int main(int argc, char* argv[])
 				}
 			}
 		}
-		
-		SDL_Rect rect[] = { {(int)std::floor(100 * std::sin(SDL_GetTicks())),(int)std::floor(100 * std::cos(SDL_GetTicks())),100,100},
-		{ (int)std::floor(100 * std::sin(SDL_GetTicks())) + 100,(int)std::floor(100 * std::cos(SDL_GetTicks())) + 100,100,100 },
-		{ (int)std::floor(100 * std::cos(SDL_GetTicks())) + 200,(int)std::floor(100 * std::sin(SDL_GetTicks())) + 200,100,100 } };
-		SDL_SetRenderDrawColor(Game_Renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-		SDL_RenderClear(Game_Renderer);
+#pragma endregion
 
-		SDL_SetRenderDrawColor(Game_Renderer, 0, 0, 0, 0xff);
-		SDL_RenderFillRects(Game_Renderer, rect,3);
-		SDL_RenderPresent(Game_Renderer);
+		test.setXY(100,100);
+		utl::uDisplayManager::draw();//TODO fix memory leak
+
+		logSDLError(std::cout, "check: ");
+		
 	}
 	SDL_Quit();
 	return 0;

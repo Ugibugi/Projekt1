@@ -48,8 +48,9 @@ namespace utl
 		public:
 			Handle(){}
 			Handle(std::string name) { set(name); }
+			inline void load() { __ptr->load(); }
 			inline void set(std::string name) { __ptr = uResourceManager::get<this_t>(name); }
-			inline const T* get() const
+			inline  T* get()
 			{
 				if (!(__ptr->isLoaded()))
 					__ptr->load();
