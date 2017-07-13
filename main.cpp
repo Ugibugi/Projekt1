@@ -49,17 +49,20 @@ int main(int argc, char* argv[])
 
 
 	utl::uDisplayManager::init(Game_Window, Game_Renderer);
+
 	utl::uDisplayObject test;
 	test.srcImage.set("420.jpg");
 	test.srcImage.load();
+	test.setXY(100, 100);
+
 	utl::uDisplayManager::loadObject(&test);
 	
+
 	SDL_Event e;
 	bool quit = false;
 
 	while (!quit)
 	{
-#pragma region Event Loop
 		while (SDL_PollEvent(&e) != 0)
 		{
 			if (e.type == SDL_QUIT)
@@ -82,14 +85,13 @@ int main(int argc, char* argv[])
 				}
 			}
 		}
-#pragma endregion
 
-		test.setXY(100,100);
-		utl::uDisplayManager::draw();//TODO fix memory leak
+		utl::uDisplayManager::draw();
+		
 
-		logSDLError(std::cout, "check: ");
 		
 	}
+	utl::uDisplayManager::close();
 	SDL_Quit();
 	return 0;
 

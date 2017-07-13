@@ -23,11 +23,13 @@ void uDisplayManager::loadObject(uDisplayObject* object)
 }
 void uDisplayManager::draw()
 {
+	SDL_RenderClear(_renderer);
 	for (auto object : _loadedObjects)
 	{
 		if (SDL_RenderCopy(_renderer, object->getTexture(), NULL, object->getTarget()) == -1)
 			std::cout << SDL_GetError();
 	}
+	SDL_RenderPresent(_renderer);
 }
 void uDisplayManager::close()
 {
