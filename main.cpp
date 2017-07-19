@@ -3,7 +3,7 @@
 #include <iostream>
 #include <chrono>
 #include <cmath>
-
+#include <cstdlib>
 #include "uFunctionStorage.h"
 #include "uResource.h"
 #include "uDisplayManager.h"
@@ -12,7 +12,6 @@ void logSDLError(std::ostream &os, const std::string &msg)
 {
 	os << msg.c_str() << " error: " << SDL_GetError() << std::endl;
 }
-
 
 int main(int argc, char* argv[])
 {
@@ -41,18 +40,19 @@ int main(int argc, char* argv[])
 		SDL_DestroyWindow(Game_Window);
 	}
 #pragma endregion
-	/*utl::uFunctionStorage test_storage;
+	utl::uFunctionStorage test_storage;
 	uint32_t TEST_FUNC = 1;
 
-	test_storage.addCall<int, double>(TEST_FUNC,test,4, 5.1);
-	test_storage.Call(TEST_FUNC);*/
-
+	
+	int i = 2, j = 4;
+	test_storage.addCall(TEST_FUNC, std::printf, "i = %d \n j = %d", i, j);
+	test_storage.Call(TEST_FUNC);
+	
 
 	utl::uDisplayManager::init(Game_Window, Game_Renderer);
 
 	utl::uDisplayObject test;
 	test.srcImage.set("420.jpg");
-	test.srcImage.load();
 	test.setXY(100, 100);
 
 	utl::uDisplayManager::loadObject(&test);
@@ -77,7 +77,6 @@ int main(int argc, char* argv[])
 					quit = true;
 					break;
 				case SDLK_DOWN:
-					//TODO
 					break;
 				default:
 					//TODO
