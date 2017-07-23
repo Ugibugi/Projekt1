@@ -8,6 +8,7 @@ namespace utl
 	class uFunctionStorage
 	{
 	public:
+		//x.addCall(call_id, function_ptr, arg1, arg2 ... );
 		template<typename... Types>
 		void addCall(uint32_t call_id, Types&&... args)
 		{

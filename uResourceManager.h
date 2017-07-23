@@ -2,7 +2,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <memory>
 #include <type_traits>
 #include "uResource.h"
@@ -43,7 +43,7 @@ namespace utl
 	private:
 		static std::string _resDirPath;
 		//TODO buffer often requested data
-		static std::map<std::string,std::shared_ptr<uResource_base>> _resources;
+		static std::unordered_map<std::string,std::shared_ptr<uResource_base>> _resources;
 		
 	};
 }
