@@ -1,6 +1,6 @@
 #pragma once
 #include "uFunctionStorage.h"
-#include <map>
+#include <unordered_map>
 namespace utl
 {
 
@@ -23,7 +23,7 @@ namespace utl
 	private:
 		//void processEvent(uint32_t type_id, uint32_t event_id);
 
-		std::map<uint32_t, uFunctionStorage> _eventHandlers;
+		std::unordered_map<uint32_t, uFunctionStorage<>> _eventHandlers;
 
 	};
 

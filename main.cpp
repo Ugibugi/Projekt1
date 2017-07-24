@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
 		
 	});
 	handler.on(SDL_KEYDOWN, SDLK_UP, [&test]() {
-		test.setImage("res/SPACEB1.png");
+		test.setImage("res/SPACEA2.png");
 		
 	});
 	handler.on(SDL_KEYDOWN, SDLK_LEFT, [&test,&w,&h]() {
