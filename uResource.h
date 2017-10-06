@@ -6,11 +6,25 @@
 
 namespace utl
 {
+	/*
+	* Classes for efficient resource managment using RAII.
+	* Custom resource types can be used by passing a "Creator" and "Deleter". - (TODO make creator take custom parameters)
+	*
+	* Basically this class ensures safe acquisition of resources  
+	* that are stored in uResourceManager as uResource_base pointers.
+	* The Resource is initialized only when a .get() is called on its handle and has not been initialized earlier.
+	*
+	* Probably the same thing could be achived by deriving form smart pointers,
+	* but for now it's just a wrapper around one.
+	*
+	*/
 
 	class uResource_base
 	{
 	public:
 		uResource_base(std::string name) :_resName(name){}
+		//Calls for loaders and unloaders later defined in derived uResource
+		//with checks
 		void load() {
 			if (!_isLoaded) { _load(); }_isLoaded = true;
 		}
@@ -32,12 +46,15 @@ namespace utl
 	template<typename T, T*(*Creator)(std::string), void(*Deleter)(T*)>
 	class uResource: public uResource_base
 	{
+		//Typedefs for creator, deleter and This
 		T*(*creator)(std::string) = Creator;
 		void(*deleter)(T*) = Deleter;
 		typedef uResource<T, Creator, Deleter> this_t;
 
+		//define loader and unloader, no checks are required
 		virtual void _load() { _resource = creator(_resName); }
 		virtual void _unload() { deleter(_resource); }
+
 		T* _resource;
 	public:
 		uResource(std::string name) :uResource_base(name){}
@@ -49,7 +66,10 @@ namespace utl
 			Handle(){}
 			Handle(std::string name) { set(name); }
 			inline void load() { __ptr->load(); }
+
+			//call according uResourceManager::get() method which will return given type of resource and with given Id
 			inline void set(std::string name) { __ptr = uResourceManager::get<this_t>(name); }
+
 			inline  T* get()
 			{
 				if (!(__ptr->isLoaded()))
@@ -57,6 +77,7 @@ namespace utl
 				return __ptr->_resource;
 			}
 		private:
+			
 			std::shared_ptr<this_t> __ptr;
 		};
 	};

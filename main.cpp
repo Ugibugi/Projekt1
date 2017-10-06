@@ -16,14 +16,35 @@ void logSDLError(std::ostream &os, const std::string &msg)
 }
 struct
 {
-	const int Padding = 10;
-	const int RowHeight = 50;
-	const int ColWidth = 50;
+	/*
+	int Padding = 50;
+	int RowHeight = 25;
+	int ColWidth = 25;*/
+
 	std::array<std::array<utl::uDisplayObject, 11>, 6> invaders;
 	utl::uDisplayObject player;
 	utl::uDisplayObject laser;
 	void load()
 	{
+		SDL_DisplayMode info;
+		SDL_GetCurrentDisplayMode(0, &info);
+		auto procentW = [&info](int x)
+		{
+			std::clamp(x, 0, 100);
+			float onePercent = info.w / 100.0f;
+			return (int)onePercent * x;
+		};
+		auto procentH = [&info](int x)
+		{
+			std::clamp(x, 0, 100);
+			float onePercent = info.h / 100.0f;
+
+			return (int)onePercent * x;
+		};
+		int Padding = 25;
+		int RowHeight = procentH(7);
+		int ColWidth = procentW(7);
+		//display grid of invaders
 		for (size_t i = 0; i < invaders.size(); i++)
 		{
 			for (size_t j = 0; j < invaders[i].size(); j++)
@@ -43,13 +64,34 @@ struct
 					invaders[i][j].setImage("res/SPACEA1.png");
 					break;
 				}
-				invaders[i][j].setWH(ColWidth, RowHeight);
+				invaders[i][j].setWH(ColWidth-10, RowHeight-10);
 				invaders[i][j].setXY((j+1)*(ColWidth + Padding), (i+1)*(RowHeight + Padding));
 				utl::uDisplayManager::loadObject(&invaders[i][j]);
 			}
 		}
-		
+		player.setImage("res/PLAYER.png");
+		utl::uDisplayManager::loadObject(&player);
+		player.setXY(invaders.front().back().getTarget()->x, invaders.back().back().getTarget()->y + procentH(10));
 	}
+
+	/*void setRowHeight(int newVal)
+	{
+		RowHeight = newVal;
+		for (auto&& rows : invaders)
+		{
+			for (auto&& invs : rows)
+				invs.setWH(ColWidth, RowHeight);	
+		}
+	}
+	void setColWidth(int newVal)
+	{
+		ColWidth = newVal;
+		for (auto&& rows : invaders)
+		{
+			for (auto&& invs : rows)
+				invs.setWH(ColWidth, RowHeight);
+		}
+	}*/
 } game;
 int main(int argc, char* argv[])
 {
@@ -63,13 +105,18 @@ int main(int argc, char* argv[])
 	}
 	IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF);
 	//TTF_Init();
-	SDL_Window* Game_Window = SDL_CreateWindow("BLANK", 100,100, 1280, 1024, SDL_WINDOW_SHOWN);
+	SDL_Window* Game_Window = SDL_CreateWindow("BLANK", 0,0, 0, 0, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
 	end = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_seconds = end - start;
 	if (Game_Window == nullptr)
 	{
 		logSDLError(std::cout, "Window");
 	}
+	//get Display info
+	
+	
+
+
 	SDL_Renderer* Game_Renderer = SDL_CreateRenderer(Game_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (Game_Renderer == nullptr)
 	{
@@ -77,40 +124,26 @@ int main(int argc, char* argv[])
 		SDL_DestroyWindow(Game_Window);
 	}
 #pragma endregion
-	
-	
-
+	bool quit = false;
 	utl::uInputHandler handler;
 	utl::uDisplayManager::init(Game_Window, Game_Renderer);
 	utl::uDisplayObject test("res/SPACEA1.png");
-	utl::uDisplayManager::loadObject(&test);
-	int w=100, h=100;
-	test.setWH(w, h);
-	//TODO Fix .set("")function
+	//utl::uDisplayManager::loadObject(&test);
 	//KeyMapping
-	handler.on(SDL_KEYDOWN, SDLK_DOWN, [&test]() {
-		test.setImage("res/SPACEA1.png");
+	handler.on(SDL_KEYDOWN, SDLK_LEFT, []() {
+		game.player.setXY(game.player.getTarget()->x - 10, game.player.getTarget()->y);
 		
 	});
-	handler.on(SDL_KEYDOWN, SDLK_UP, [&test]() {
-		test.setImage("res/SPACEA2.png");
-		
+	handler.on(SDL_KEYDOWN, SDLK_RIGHT, []() {
+		game.player.setXY(game.player.getTarget()->x + 10, game.player.getTarget()->y);
 	});
-	handler.on(SDL_KEYDOWN, SDLK_LEFT, [&test,&w,&h]() {
-		w += 10;
-		h += 10;
-		test.setWH(w, h);
-		
+	handler.on(SDL_KEYDOWN, SDLK_ESCAPE, [&quit]()
+	{
+		quit = true;
 	});
-	handler.on(SDL_KEYDOWN, SDLK_RIGHT, [&test, &w, &h]() {
-		w -= 10;
-		h -= 10;
-		test.setWH(w, h);
-	});
-
-	//game.load();
+	game.load();
 	SDL_Event e;
-	bool quit = false;
+	
 	while (!quit)
 	{
 		
@@ -119,13 +152,10 @@ int main(int argc, char* argv[])
 			if (e.type == SDL_QUIT)
 			{
 				quit = true;
-			}
-			else if (e.type == SDL_KEYDOWN)
-			{
-				handler.newEvent(e.type, e.key.keysym.sym);
-			}
+			}	
 		}
-
+		//TODO FIX
+		handler.processKeyboard();
 		utl::uDisplayManager::draw();
 		
 

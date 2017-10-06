@@ -8,13 +8,13 @@ namespace utl
 	class uDisplayObject
 	{
 	public:
-		uDisplayObject() {}
+		uDisplayObject() :active(true) {}
 		uDisplayObject(std::string texName) : active(true), srcImage(texName){}
 		inline SDL_Texture* getTexture() { return _texture; }
 
 
 
-		inline SDL_Rect* getTarget() { return &_target; }
+		inline const SDL_Rect* getTarget() const { return &_target; }
 		inline void setXY(int x, int y) { _target.x = x; _target.y = y; }
 		inline void setWH(int w, int h) { _target.w = w; _target.h = h; }
 		inline void setTarget(SDL_Rect rect) { _target = rect; }

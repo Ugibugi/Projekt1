@@ -3,10 +3,4 @@
 using namespace utl;
 
 
-uTimer::uTimer()
-{
-}
 
-uTimer::~uTimer()
-{
-}
