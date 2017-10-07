@@ -20,7 +20,7 @@ namespace utl
 			_eventHandlers[type_id].addCall(event_id, args...);
 
 			//if is keyboard event, save the binded key
-			if (type_id & (SDL_KEYDOWN | SDL_KEYUP)) _bindedKeys.push_back(SDL_GetScancodeFromKey(event_id)); 
+			if (type_id & (SDL_KEYDOWN | SDL_KEYUP)) _bindedKeys.push_back(event_id); 
 		}
 		
 
@@ -31,9 +31,9 @@ namespace utl
 			int arraySize = 0;
 			const uint8_t* keyArray = SDL_GetKeyboardState(&arraySize);
 
-			for (auto vKey : _bindedKeys)
+			for (auto vKey : _bindedKeys) //iterate trough VKeyCodes
 			{
-				if (keyArray[vKey] == 1)
+				if (keyArray[SDL_GetScancodeFromKey(vKey)] == 1) // convert to scancode for array lookup
 					newEvent(SDL_KEYDOWN, vKey);
 				else
 					newEvent(SDL_KEYUP, vKey);
