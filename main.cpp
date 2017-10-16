@@ -5,12 +5,14 @@
 #include <cmath>
 #include <cstdlib>
 #include <array>
+#include <q3.h>
 #include "uFunctionStorage.h"
 #include "uResource.h"
 #include "uDisplayManager.h"
 #include "uInputHandler.h"
 #include "uDisplayObject.h"
 #include "Game.h"
+#include "uRendererSDL.h"
 void logSDLError(std::ostream &os, const std::string &msg)
 {
 	os << msg.c_str() << " error: " << SDL_GetError() << std::endl;
@@ -18,8 +20,6 @@ void logSDLError(std::ostream &os, const std::string &msg)
 
 int main(int argc, char* argv[])
 {
-#pragma region Initialization
-
 	std::chrono::time_point<std::chrono::system_clock> start, end;
 	start = std::chrono::system_clock::now();
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -37,18 +37,16 @@ int main(int argc, char* argv[])
 	}
 	//get Display info
 	
-	
-
-
-	SDL_Renderer* Game_Renderer = SDL_CreateRenderer(Game_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (Game_Renderer == nullptr)
+	utl::uRendererSDL Game_Renderer(Game_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	if (!Game_Renderer.valid)
 	{
 		logSDLError(std::cout, "SDL_Window");
 		SDL_DestroyWindow(Game_Window);
 	}
-#pragma endregion
+
 	
-	utl::uDisplayManager::init(Game_Window, Game_Renderer);
+
+	utl::uDisplayManager::init(&Game_Renderer);
 
 	Game game;
 	game.load();

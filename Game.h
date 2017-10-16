@@ -77,13 +77,19 @@ public:
 		});
 
 		handler.on(SDL_KEYDOWN, SDLK_SPACE, [this]() {
-			shoot();
+			if (!shootActive)
+			{
+				laser.setTarget(*(player.getTarget()));
+				shootActive = true;
+			}
 		});
 
 	}
 
 	void tick()
 	{
+		if (shootActive)
+			shoot();
 		handler.processKeyboard();
 	}
 	void shoot()
@@ -92,18 +98,18 @@ public:
 		if (laser.getTarget()->y <= 0)
 		{
 			laser.active = false;
-			laser.setTarget(*(player.getTarget()));
+			shootActive = false;
 		}
 		laser.setXY(laser.getTarget()->x, laser.getTarget()->y - 10);
 	}
 
-	int procentW(int x)
+	inline int procentW(int x)
 	{
 		std::clamp(x, 0, 100);
 		float onePercent = displayInfo.w / 100.0f;
 		return (int)onePercent * x;
 	};
-	int procentH(int x)
+	inline int procentH(int x)
 	{
 		std::clamp(x, 0, 100);
 		float onePercent = displayInfo.h / 100.0f;
@@ -116,7 +122,7 @@ public:
 	bool quit = false;
 	utl::uInputHandler handler;
 	SDL_DisplayMode displayInfo;
-
+	bool shootActive = false;
 
 	/*void setRowHeight(int newVal)
 	{

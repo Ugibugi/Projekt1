@@ -10,7 +10,7 @@ namespace utl
 	public:
 		uDisplayObject() :active(true) {}
 		uDisplayObject(std::string texName) : active(true), srcImage(texName){}
-		inline SDL_Texture* getTexture() { return _texture; }
+		inline int getTexture() { return _texture; }
 
 
 
@@ -30,7 +30,7 @@ namespace utl
 	
 		virtual ~uDisplayObject();
 
-		SDL_Texture* _texture;
+		int _texture;
 		bool active;
 
 	private:
