@@ -36,7 +36,7 @@ namespace utl
 		static std::shared_ptr<T> get(std::string name)
 		{
 			//The return type has to be derived form uResource_base
-			static_assert(std::is_base_of<uResource_base, T>::value, "ERROR");
+			static_assert(std::is_base_of<uResource_base, T>::value, "ERROR: template argument in uResourceManager::get is not a child of uResource_base.");
 			std::shared_ptr<T> ret;
 
 			if (_resources.count(name) == 0)

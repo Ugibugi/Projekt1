@@ -14,14 +14,13 @@ namespace utl
 		
 		static void init(uRenderer* renderer);
 	
-		static void loadObject(uDisplayObject* object);
+		static void uDisplayManager::loadObject(uDisplayObject* object);
 		static inline uRenderer* getRenderer() { return _renderer; }
 		static void draw();
 		static void close();
 		static void clearObjects();
+		static void reloadObject(uDisplayObject* object);
 	private:
-		static void drawObject(uDisplayObject* object);
-		static void reloadObjectTexture(uDisplayObject* object);
 		static uRenderer* _renderer;
 		static bool _initialized;
 		static std::unordered_set<uDisplayObject*> _loadedObjects;

@@ -15,11 +15,11 @@ void uDisplayManager::init(uRenderer* renderer)
 	_initialized = true;
 
 }
-//TODO fix setting width and height
 void uDisplayManager::loadObject(uDisplayObject* object)
 {
-	object->_texture = _renderer->loadTexture(object->getImage());//first get - Resource is loaded
-	object->setWH(object->getImage()->w, object->getImage()->h); // set default dismensions of an image
+	_renderer->loadObject(object);
+	//object->_texture = _renderer->loadTexture(object->getImage());
+	//object->setWH(object->getImage()->w, object->getImage()->h); // set default dismensions of an image
 	_loadedObjects.insert(object);
 }
 void uDisplayManager::draw()
@@ -35,20 +35,19 @@ void uDisplayManager::draw()
 	_renderer->showScr();
 }
 
-void uDisplayManager::reloadObjectTexture(uDisplayObject* object)
+void uDisplayManager::reloadObject(uDisplayObject* object)
 {
 	
 	if (_loadedObjects.count(object)==1)
 	{
-		_renderer->destroyTexture(object->_texture);
-		object->_texture = _renderer->loadTexture(object->getImage());
+		_renderer->reloadObject(object);
 	}
 }
 void uDisplayManager::clearObjects()
 {
 	for (auto object : _loadedObjects)
 	{
-		_renderer->destroyTexture(object->_texture);
+		_renderer->destroyObject(object);
 	}
 	_loadedObjects.clear();
 }
@@ -56,3 +55,4 @@ void uDisplayManager::close()
 {
 
 }
+

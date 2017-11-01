@@ -16,14 +16,14 @@ namespace utl
 	* Probably the same thing could be achived by deriving form smart pointers,
 	* but for now it's just a wrapper around one.
 	*
+	* TODO add reference counting
 	*/
 
 	class uResource_base
 	{
 	public:
 		uResource_base(std::string name) :_resName(name){}
-		//Calls for loaders and unloaders later defined in derived uResource
-		//with checks
+		//Calls virtual methods(creator and deleter) defined in derived uResource with checks
 		void load() {
 			if (!_isLoaded) { _load(); }_isLoaded = true;
 		}
@@ -69,18 +69,20 @@ namespace utl
 			//call according uResourceManager::get() method which will return given type of resource and with given Id
 			inline void set(std::string name) { __ptr = uResourceManager::get<this_t>(name); }
 
-			inline  T* get()
+			inline  T* get() const
 			{
 				if (!(__ptr->isLoaded()))
 					__ptr->load();
 				return __ptr->_resource;
 			}
 		private:
-			
 			std::shared_ptr<this_t> __ptr;
 		};
 	};
-
+	class uHandle
+	{
+		public:
+	};
 	//uResource<SDL_Surface>::Handle image; //target way of using 
 	//image.set("xd.bmp");
 

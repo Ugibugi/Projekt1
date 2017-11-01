@@ -6,6 +6,7 @@
 #include "uDisplayManager.h"
 #include "uInputHandler.h"
 #include "uDisplayObject.h"
+#include "uRendererSDL.h"
 /*
 temporary Game class for testing purposes.
 
@@ -23,7 +24,7 @@ public:
 	void load()
 	{
 		
-		int Padding = 25;
+		int Padding = 15;
 		int RowHeight = procentH(7);
 		int ColWidth = procentW(7);
 
@@ -55,6 +56,7 @@ public:
 
 		//Initialise other display objects
 		player.setImage("res/PLAYER.png");
+		player.setDefaultWH();
 		utl::uDisplayManager::loadObject(&player);
 		player.setXY(invaders.front().back().getTarget()->x, invaders.back().back().getTarget()->y + procentH(20));
 
@@ -116,9 +118,9 @@ public:
 		return (int)onePercent * x;
 	};
 
-	std::array<std::array<utl::uDisplayObject, 11>, 6> invaders;
-	utl::uDisplayObject player;
-	utl::uDisplayObject laser;
+	std::array<std::array<utl::uSDLRenderObject, 11>, 6> invaders;
+	utl::uSDLRenderObject player;
+	utl::uSDLRenderObject laser;
 	bool quit = false;
 	utl::uInputHandler handler;
 	SDL_DisplayMode displayInfo;

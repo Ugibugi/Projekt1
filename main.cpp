@@ -45,7 +45,6 @@ int main(int argc, char* argv[])
 	}
 
 	
-
 	utl::uDisplayManager::init(&Game_Renderer);
 
 	Game game;

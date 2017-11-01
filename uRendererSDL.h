@@ -5,9 +5,39 @@
 #include <iostream>
 namespace utl
 {
+	typedef uResource<SDL_Surface, uResourceManager::loadImage, SDL_FreeSurface>::Handle uImage;
+	class uSDLRenderObject : public uDisplayObject
+	{
+		friend class uRendererSDL;
+	public:
+		uSDLRenderObject() : uDisplayObject() {}
+		uSDLRenderObject(std::string resName) : uDisplayObject(resName), srcImage(_resName) {
+			setWH(getImage()->w, getImage()->h);
+		}
+		inline void setDefaultWH()
+		{
+			setWH(getImage()->w, getImage()->h);
+		}
+		inline int getTexture() { return _texture; }
+		inline void setImage(std::string&& path)
+		{
+			srcImage.set(std::forward<std::string>(path));
+			uDisplayManager::reloadObject(static_cast<uDisplayObject*>(this));
+		}
+		inline SDL_Surface* getImage()
+		{
+			return srcImage.get();
+		}
+	private:
+		int _texture;
+		uImage srcImage;
+	};
 	class uRendererSDL : public uRenderer
 	{
 	public:
+		typedef  uSDLRenderObject RenderObject;
+		
+
 		uRendererSDL(SDL_Window* window, int index, uint32_t flags)
 		{
 			_renderer = SDL_CreateRenderer(window, index, flags);
@@ -19,7 +49,6 @@ namespace utl
 		}
 		virtual int loadTexture(SDL_Surface* image)
 		{
-			//TODO: replace vector with map
 			_textures.push_back(SDL_CreateTextureFromSurface(_renderer, image));
 			return _textures.size() - 1;
 		}
@@ -29,9 +58,25 @@ namespace utl
 		}
 		virtual void drawObject(uDisplayObject* object)
 		{
-		
-				if (SDL_RenderCopy(_renderer, _textures.at(object->getTexture()), NULL, object->getTarget()) == -1)
-					std::cout << SDL_GetError();
+			auto renderObject = static_cast<RenderObject*>(object);
+
+			//put coordinate point in the middle of bounding box
+			SDL_Rect temp{ renderObject->getTarget()->x + renderObject->getTarget()->w/2, renderObject->getTarget()->y + renderObject->getTarget()->h / 2 , renderObject->getTarget()->w , renderObject->getTarget()->h };
+			if (SDL_RenderCopy(_renderer, _textures.at(renderObject->getTexture()), NULL, &temp) == -1)
+				std::cout << SDL_GetError();
+		}
+		virtual void loadObject(uDisplayObject* object)
+		{
+			static_cast<RenderObject*>(object)->_texture = loadTexture(static_cast<RenderObject*>(object)->getImage());
+		}
+		virtual void reloadObject(uDisplayObject* object)
+		{
+			destroyObject(object);
+			loadObject(object);
+		}
+		virtual void destroyObject(uDisplayObject* object)
+		{
+			destroyTexture(static_cast<RenderObject*>(object)->_texture);
 		}
 		virtual void showScr()
 		{
@@ -51,5 +96,6 @@ namespace utl
 	private:
 		SDL_Renderer* _renderer;
 		std::vector<SDL_Texture*> _textures;
+		//TODO: replace vector with map
 	};
 };
