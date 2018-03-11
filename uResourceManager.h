@@ -45,7 +45,9 @@ namespace utl
 				// create it and load it from disk with methods passed as
 				// Creator and deleter in uResource class.
 				std::shared_ptr<uResource_base> ptr(new T(name));
-				ptr->load();
+				if (!ptr->load())
+					std::cout << "Error loading image: " << ptr->getName();
+
 
 				//cast ptr to a return type and store it for later use
 				ret = std::static_pointer_cast<T>(ptr);

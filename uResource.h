@@ -24,8 +24,9 @@ namespace utl
 	public:
 		uResource_base(std::string name) :_resName(name){}
 		//Calls virtual methods(creator and deleter) defined in derived uResource with checks
-		void load() {
-			if (!_isLoaded) { _load(); }_isLoaded = true;
+		bool load() {
+			if (!_isLoaded) { _isLoaded =_load(); }
+			return _isLoaded;
 		}
 		void unload() {
 			if (_isLoaded) { _unload(); }_isLoaded = false;
@@ -38,10 +39,9 @@ namespace utl
 		bool _isLoaded;
 		std::string _resName;
 	private:
-		virtual void _load() = 0;
+		virtual bool _load() = 0;
 		virtual void _unload() = 0;
 	};
-
 	template<typename T, T*(*Creator)(std::string), void(*Deleter)(T*)>
 	class uResource: public uResource_base
 	{
@@ -50,11 +50,13 @@ namespace utl
 		void(*deleter)(T*) = Deleter;
 		typedef uResource<T, Creator, Deleter> this_t;
 
-		//define loader and unloader, no checks are required
-		virtual void _load() { _resource = creator(_resName); }
+	
+		virtual bool _load() { _resource = creator(_resName);
+		if (_resource == nullptr) return false; else return true; }
+
 		virtual void _unload() { deleter(_resource); }
 
-		T* _resource;
+		T* _resource=nullptr;
 	public:
 		uResource(std::string name) :uResource_base(name){}
 		virtual ~uResource() { unload(); };
@@ -79,10 +81,7 @@ namespace utl
 			std::shared_ptr<this_t> __ptr;
 		};
 	};
-	class uHandle
-	{
-		public:
-	};
+	
 	//uResource<SDL_Surface>::Handle image; //target way of using 
 	//image.set("xd.bmp");
 

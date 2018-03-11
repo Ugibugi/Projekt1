@@ -15,16 +15,16 @@ class Game
 {
 public:
 
-	Game()
+	Game(SDL_Window* window)
 	{
 		//Get viewport dismensions
-		SDL_GetCurrentDisplayMode(0, &displayInfo);
+		SDL_GetWindowSize(window, &displayInfo.w,&displayInfo.h);
 	}
 	
 	void load()
 	{
 		
-		int Padding = 15;
+		int Padding = procentW(1);
 		int RowHeight = procentH(7);
 		int ColWidth = procentW(7);
 
@@ -48,30 +48,33 @@ public:
 					invaders[i][j].setImage("res/SPACEA1.png");
 					break;
 				}
-				invaders[i][j].setWH(ColWidth - 10, RowHeight - 10);
-				invaders[i][j].setXY((j + 1)*(ColWidth + Padding), (i + 1)*(RowHeight + Padding));
+				invaders[i][j].setWH(ColWidth - 10, RowHeight - 5);
+				invaders[i][j].setXY((j)*(ColWidth + Padding), (i + 1)*(RowHeight + Padding));
 				utl::uDisplayManager::loadObject(&invaders[i][j]);
 			}
 		}
 
 		//Initialise other display objects
 		player.setImage("res/PLAYER.png");
-		player.setDefaultWH();
+		player.setWH(ColWidth, RowHeight);
 		utl::uDisplayManager::loadObject(&player);
-		player.setXY(invaders.front().back().getTarget()->x, invaders.back().back().getTarget()->y + procentH(20));
+		player.setXY(invaders.front().back().getTarget()->x, invaders.back().back().getTarget()->y + procentH(25));
 
-		laser.setImage("res/BOOM.png");
-		laser.setTarget(*(player.getTarget()));
+		laser.setImage("res/LASER.png");
+		laser.setDefaultWH();
+		laser.setXY(&player);
 		laser.active = false;
 		utl::uDisplayManager::loadObject(&laser);
 
 		//define keymappings
 		handler.on(SDL_KEYDOWN, SDLK_LEFT, [this]() {
 			player.setXY(player.getTarget()->x - 10, player.getTarget()->y);
+			if (player.getTarget()->x < 0) player.setXY(0, player.getTarget()->y);
 		});
 
 		handler.on(SDL_KEYDOWN, SDLK_RIGHT, [this]() {
 			player.setXY(player.getTarget()->x + 10, player.getTarget()->y);
+			if (player.getTarget()->x + player.getTarget()->w > displayInfo.w) player.setXY(displayInfo.w - player.getTarget()->w, player.getTarget()->y);
 		});
 
 		handler.on(SDL_KEYDOWN, SDLK_ESCAPE, [this]() {
@@ -81,17 +84,21 @@ public:
 		handler.on(SDL_KEYDOWN, SDLK_SPACE, [this]() {
 			if (!shootActive)
 			{
-				laser.setTarget(*(player.getTarget()));
+				laser.setXY(player.getTarget()->x + player.getTarget()->w/2,player.getTarget()->y);
 				shootActive = true;
 			}
 		});
+
 
 	}
 
 	void tick()
 	{
-		if (shootActive)
-			shoot();
+		if (!pause)
+		{
+			if (shootActive)
+				shoot();
+		}
 		handler.processKeyboard();
 	}
 	void shoot()
@@ -118,13 +125,14 @@ public:
 		return (int)onePercent * x;
 	};
 
-	std::array<std::array<utl::uSDLRenderObject, 11>, 6> invaders;
+	std::array<std::array<utl::uSDLRenderObject, 12>, 6> invaders;
 	utl::uSDLRenderObject player;
 	utl::uSDLRenderObject laser;
 	bool quit = false;
 	utl::uInputHandler handler;
 	SDL_DisplayMode displayInfo;
 	bool shootActive = false;
+	bool pause= false;
 
 	/*void setRowHeight(int newVal)
 	{

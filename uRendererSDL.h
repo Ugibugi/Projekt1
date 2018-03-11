@@ -49,8 +49,10 @@ namespace utl
 		}
 		virtual int loadTexture(SDL_Surface* image)
 		{
+			//access by SDL_Surface
 			_textures.push_back(SDL_CreateTextureFromSurface(_renderer, image));
 			return _textures.size() - 1;
+			//make entry trough SDL_surface and get new int
 		}
 		virtual void destroyTexture(int texId)
 		{
@@ -61,8 +63,8 @@ namespace utl
 			auto renderObject = static_cast<RenderObject*>(object);
 
 			//put coordinate point in the middle of bounding box
-			SDL_Rect temp{ renderObject->getTarget()->x + renderObject->getTarget()->w/2, renderObject->getTarget()->y + renderObject->getTarget()->h / 2 , renderObject->getTarget()->w , renderObject->getTarget()->h };
-			if (SDL_RenderCopy(_renderer, _textures.at(renderObject->getTexture()), NULL, &temp) == -1)
+			SDL_Rect temp{ renderObject->getTarget()->x, renderObject->getTarget()->y, renderObject->getTarget()->w , renderObject->getTarget()->h };
+			if (SDL_RenderCopy(_renderer, _textures.at(renderObject->getTexture()), NULL, &temp) == -1)//access by int
 				std::cout << SDL_GetError();
 		}
 		virtual void loadObject(uDisplayObject* object)

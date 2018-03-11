@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 	}
 	IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF);
 	//TTF_Init();
-	SDL_Window* Game_Window = SDL_CreateWindow("BLANK", 0,0, 0, 0, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
+	SDL_Window* Game_Window = SDL_CreateWindow("BLANK", 0,0, 1000,1000, SDL_WINDOW_SHOWN);
 	end = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_seconds = end - start;
 	if (Game_Window == nullptr)
@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 	
 	utl::uDisplayManager::init(&Game_Renderer);
 
-	Game game;
+	Game game(Game_Window);
 	game.load();
 	SDL_Event e;
 	
@@ -64,6 +64,7 @@ int main(int argc, char* argv[])
 
 		game.tick();
 		utl::uDisplayManager::draw();
+		//std::cout << "x: " << game.laser.getTarget()->x << " y: " << game.laser.getTarget()->y << " wh: " << game.laser.getTarget()->w << " " << game.laser.getTarget()->h << "\n";
 
 	}
 	utl::uDisplayManager::close();
