@@ -133,6 +133,7 @@ public:
 	SDL_DisplayMode displayInfo;
 	bool shootActive = false;
 	bool pause= false;
+	
 
 	/*void setRowHeight(int newVal)
 	{

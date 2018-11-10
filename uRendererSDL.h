@@ -88,7 +88,7 @@ namespace utl
 		{
 			SDL_RenderClear(_renderer);
 		}
-		~uRendererSDL()
+		virtual ~uRendererSDL()
 		{
 			for (auto i : _textures)
 				SDL_DestroyTexture(i);
