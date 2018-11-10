@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "uTarget.h"
+#include "uMath.h"
 #include "SDL.h"
 namespace utl
 {
@@ -13,7 +14,6 @@ namespace utl
 		uPhysicsObject(std::shared_ptr<uTarget> rectToBind = std::make_shared<uTarget>())
 			: active(true), _box(rectToBind)
 		{}
-		inline int getTexture() { return _texture; }
 
 
 
@@ -24,10 +24,9 @@ namespace utl
 		inline void setTarget(uTarget rect) { *_box = rect; }
 		inline void setTarget(std::shared_ptr<uTarget> rectToBind) { _box = rectToBind; }
 
-		int _texture;
 		bool active; // inactive objects don't move but are still solid
 		float mass;
-		SDL_Point velocity;
+		uVec2D velocity;
 		std::shared_ptr<uTarget> _box;
 	private:
 		uint8_t _id;

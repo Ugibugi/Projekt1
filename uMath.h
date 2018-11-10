@@ -4,9 +4,9 @@ namespace utl
 {
 	class uVec2D
 	{
-		float _x, _y; //standard representation
+		float _x=0, _y=0; //standard representation
 
-		std::complex<float> _z; //representation on complex plane
+		std::complex<float> _z = { 0,0 }; //representation on complex plane
 
 		inline void _setXY(float x, float y)
 		{
@@ -16,6 +16,7 @@ namespace utl
 			_z.imag = y;
 		}
 	public:
+		uVec2D() = default;
 		uVec2D(float x, float y)
 		{
 			_setXY(x, y);
