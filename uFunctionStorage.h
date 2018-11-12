@@ -5,6 +5,8 @@
 #include <functional>
 namespace utl
 {
+
+
 	template<typename T = uint32_t>
 	class uFunctionStorage
 	{
@@ -36,7 +38,7 @@ namespace utl
 			for (auto&& f : _functionCalls)
 				f.second();
 		}
-		
+
 	private:
 		std::map<T, std::function<void(void)>> _functionCalls;
 	};

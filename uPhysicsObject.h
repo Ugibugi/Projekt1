@@ -6,7 +6,6 @@
 namespace utl
 {
 
-	
 	class uPhysicsObject
 	{
 	public:
