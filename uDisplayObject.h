@@ -9,9 +9,9 @@ namespace utl
 	class uDisplayObject
 	{
 	public:
-		uDisplayObject() :active(true), _resName(), _target(std::make_shared<uTarget>()) {}
-		uDisplayObject(std::string resName, std::shared_ptr<uTarget> targetToBind = std::make_shared<uTarget>()) : active(true), _resName(resName), _target(targetToBind) {}
-		inline uTarget* getTarget() { return _target.get(); }
+		uDisplayObject() :active(true), _resName(), _target(nullptr) {}
+		uDisplayObject(std::string resName, uTarget* targetToBind = nullptr) : active(true), _resName(resName), _target(targetToBind) {}
+		inline uTarget* getTarget() { return _target; }
 		inline void setXY(int x, int y) { _target->x = x; _target->y = y; }
 		inline void setXY(uDisplayObject* object) { _target->x = object->getTarget()->x; _target->y = object->getTarget()->y; }
 
@@ -25,6 +25,7 @@ namespace utl
 
 
 		inline void setTarget(uTarget target) { *_target = target; }
+		inline void setNewTarget(uTarget* target) { _target = target; }
 		
 		virtual ~uDisplayObject();
 
@@ -32,7 +33,7 @@ namespace utl
 	protected:
 		std::string _resName;
 	private:
-		std::shared_ptr<uTarget> _target;
+		uTarget* _target;
 		
 		
 	};

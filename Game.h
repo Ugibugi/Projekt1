@@ -48,6 +48,7 @@ public:
 					invaders[i][j].setImage("res/SPACEA1.png");
 					break;
 				}
+				invaders[i][j].setNewTarget(&targets[i][j]);
 				invaders[i][j].setWH(ColWidth - 10, RowHeight - 5);
 				invaders[i][j].setXY((j)*(ColWidth + Padding), (i + 1)*(RowHeight + Padding));
 				utl::uDisplayManager::loadObject(&invaders[i][j]);
@@ -126,6 +127,7 @@ public:
 	};
 
 	std::array<std::array<utl::uSDLRenderObject, 12>, 6> invaders;
+	std::array<std::array<utl::uTarget, 12>, 6> targets;
 	utl::uSDLRenderObject player;
 	utl::uSDLRenderObject laser;
 	bool quit = false;
