@@ -11,9 +11,9 @@ namespace utl
 		inline void _setXY(float x, float y)
 		{
 			_x = x;
-			_z.real = x;
+			_z.real(x);
 			_y = y;
-			_z.imag = y;
+			_z.imag(y);
 		}
 	public:
 		uVec2D() = default;
@@ -53,7 +53,7 @@ namespace utl
 		void rotate(float radians)
 		{
 			_z = std::polar<float>(std::abs(_z), std::arg(_z) + radians);
-			_setXY(_z.real, _z.imag);
+			_setXY(_z.real(), _z.imag());
 		}
 
 		const float& x = _x;

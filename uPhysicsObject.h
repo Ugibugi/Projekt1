@@ -9,12 +9,6 @@ namespace utl
 	class uPhysicsObject
 	{
 	public:
-		uPhysicsObject() :active(true), _box(nullptr) {}
-		uPhysicsObject(uTarget* rectToBind = nullptr)
-			: active(true), _box(rectToBind)
-		{}
-
-
 
 		inline uTarget *getTarget() { return _box; }
 		inline void setXY(int x, int y) { _box->x = x; _box->y = y; }
@@ -23,14 +17,14 @@ namespace utl
 		inline void setTarget(uTarget rect) { *_box = rect; }
 		inline void setNewTarget(uTarget* rectToBind) { _box = rectToBind; }
 
-		bool active; // inactive objects don't move but are still solid
-		float mass;
-		uVec2D velocity;
-		uVec2D acceleration;
-		uTarget* _box; 
+		bool active=true; // inactive objects don't move but are still solid
+		float mass=1;
+		uVec2D velocity = { 0,0 };
+		uVec2D acceleration = { 0,0 };
+		uTarget* _box = nullptr; 
 
-		uint8_t _id;
-		uint8_t _groupId;
+		uint8_t _id=0;
+		uint8_t _groupId=0;
 	private:
 		
 
