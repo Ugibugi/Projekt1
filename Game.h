@@ -7,6 +7,8 @@
 #include "uInputHandler.h"
 #include "uDisplayObject.h"
 #include "uRendererSDL.h"
+#include "uPhysicsObject.h"
+#include "uGameObject.h"
 /*
 temporary Game class for testing purposes.
 
@@ -14,7 +16,7 @@ temporary Game class for testing purposes.
 class Game
 {
 public:
-
+	typedef utl::uGameObject<utl::uPhysicsObject, utl::uSDLRenderObject> GameObject;
 	Game(SDL_Window* window)
 	{
 		//Get viewport dismensions
@@ -48,34 +50,33 @@ public:
 					invaders[i][j].setImage("res/SPACEA1.png");
 					break;
 				}
-				invaders[i][j].setNewTarget(&targets[i][j]);
-				invaders[i][j].setWH(ColWidth - 10, RowHeight - 5);
-				invaders[i][j].setXY((j)*(ColWidth + Padding), (i + 1)*(RowHeight + Padding));
+				invaders[i][j].DT::setWH(ColWidth - 10, RowHeight - 5);
+				invaders[i][j].DT::setXY((j)*(ColWidth + Padding), (i + 1)*(RowHeight + Padding));
 				utl::uDisplayManager::loadObject(&invaders[i][j]);
 			}
 		}
 
 		//Initialise other display objects
 		player.setImage("res/PLAYER.png");
-		player.setWH(ColWidth, RowHeight);
+		player.DT::setWH(ColWidth, RowHeight);
 		utl::uDisplayManager::loadObject(&player);
-		player.setXY(invaders.front().back().getTarget()->x, invaders.back().back().getTarget()->y + procentH(25));
+		player.DT::setXY(invaders.front().back().DT::getTarget()->x, invaders.back().back().DT::getTarget()->y + procentH(25));
 
 		laser.setImage("res/LASER.png");
 		laser.setDefaultWH();
-		laser.setXY(&player);
-		laser.active = false;
+		laser.DT::setXY(&player);
+		laser.DT::active = false;
 		utl::uDisplayManager::loadObject(&laser);
 
 		//define keymappings
 		handler.on(SDL_KEYDOWN, SDLK_LEFT, [this]() {
-			player.setXY(player.getTarget()->x - 10, player.getTarget()->y);
-			if (player.getTarget()->x < 0) player.setXY(0, player.getTarget()->y);
+			player.DT::setXY(player.DT::getTarget()->x - 10, player.DT::getTarget()->y);
+			if (player.DT::getTarget()->x < 0) player.DT::setXY(0, player.DT::getTarget()->y);
 		});
 
 		handler.on(SDL_KEYDOWN, SDLK_RIGHT, [this]() {
-			player.setXY(player.getTarget()->x + 10, player.getTarget()->y);
-			if (player.getTarget()->x + player.getTarget()->w > displayInfo.w) player.setXY(displayInfo.w - player.getTarget()->w, player.getTarget()->y);
+			player.DT::setXY(player.DT::getTarget()->x + 10, player.DT::getTarget()->y);
+			if (player.DT::getTarget()->x + player.DT::getTarget()->w > displayInfo.w) player.DT::setXY(displayInfo.w - player.DT::getTarget()->w, player.DT::getTarget()->y);
 		});
 
 		handler.on(SDL_KEYDOWN, SDLK_ESCAPE, [this]() {
@@ -85,7 +86,7 @@ public:
 		handler.on(SDL_KEYDOWN, SDLK_SPACE, [this]() {
 			if (!shootActive)
 			{
-				laser.setXY(player.getTarget()->x + player.getTarget()->w/2,player.getTarget()->y);
+				laser.DT::setXY(player.DT::getTarget()->x + player.DT::getTarget()->w/2,player.DT::getTarget()->y);
 				shootActive = true;
 			}
 		});
@@ -104,32 +105,31 @@ public:
 	}
 	void shoot()
 	{
-		laser.active = true;
-		if (laser.getTarget()->y <= 0)
+		laser.DT::active = true;
+		if (laser.DT::getTarget()->y <= 0)
 		{
-			laser.active = false;
+			laser.DT::active = false;
 			shootActive = false;
 		}
-		laser.setXY(laser.getTarget()->x, laser.getTarget()->y - 10);
+		laser.DT::setXY(laser.DT::getTarget()->x, laser.DT::getTarget()->y - 10);
 	}
 
 	inline int procentW(int x)
 	{
-		std::clamp(x, 0, 100);
+		int xx = std::clamp(x, 0, 100);
 		float onePercent = displayInfo.w / 100.0f;
-		return (int)onePercent * x;
+		return (int)onePercent * xx;
 	};
 	inline int procentH(int x)
 	{
-		std::clamp(x, 0, 100);
+		int xx = std::clamp(x, 0, 100);
 		float onePercent = displayInfo.h / 100.0f;
-		return (int)onePercent * x;
+		return (int)onePercent * xx;
 	};
 
-	std::array<std::array<utl::uSDLRenderObject, 12>, 6> invaders;
-	std::array<std::array<utl::uTarget, 12>, 6> targets;
-	utl::uSDLRenderObject player;
-	utl::uSDLRenderObject laser;
+	std::array<std::array<GameObject, 12>, 6> invaders;
+	GameObject player;
+	GameObject laser;
 	bool quit = false;
 	utl::uInputHandler handler;
 	SDL_DisplayMode displayInfo;
