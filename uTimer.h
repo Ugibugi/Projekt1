@@ -13,7 +13,7 @@ namespace utl
 			_lastTime.time_since_epoch() = _lastTime.time_since_epoch() - (_lastTime.time_since_epoch() % miliseconds);
 
 		}
-		~uSynchronisedTimer();
+		~uSynchronisedTimer() = default;
 		void updateTimer()
 		{
 			auto currentTime = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now());
@@ -34,7 +34,7 @@ namespace utl
 			_timedCalls.removeCall(call_id);
 		}
 	private:
-		uFunctionStorage<> _timedCalls;
+		uBindedFunctionStorage<> _timedCalls;
 		std::chrono::time_point<std::chrono::steady_clock,std::chrono::milliseconds> _lastTime;
 		std::chrono::milliseconds _duration;
 	};

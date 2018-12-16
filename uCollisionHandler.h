@@ -57,6 +57,6 @@ public:
 	}
 private:
 	std::unordered_map<uint32_t, std::type_index> typeMap;
-	std::unordered_map<std::pair<uint32_t, uint32_t>, std::shared_ptr<uHandlerCall_base>> callMap;
+	std::map<std::pair<uint32_t, uint32_t>, std::shared_ptr<uHandlerCall_base>> callMap;
 
 };

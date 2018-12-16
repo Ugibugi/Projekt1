@@ -23,8 +23,8 @@ namespace utl
 		uVec2D acceleration = { 0,0 };
 		uTarget* _box = nullptr; 
 
-		uint8_t _id=0;
-		uint8_t _groupId=0;
+		uint32_t _id=0;
+		uint32_t _groupId=0;
 	private:
 		
 
