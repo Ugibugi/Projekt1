@@ -6,7 +6,6 @@
 namespace utl
 {
 	/*
-	* Classes for efficient resource managment using RAII.
 	* Custom resource types can be used by passing a "Creator" and "Deleter". - (TODO make creator take custom parameters)
 	*
 	* Basically this class ensures safe acquisition of resources  

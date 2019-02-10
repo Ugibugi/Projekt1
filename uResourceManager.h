@@ -26,6 +26,7 @@ namespace utl
 	{
 
 	public:
+		//TODO This function belongs in SDL utility code
 		static SDL_Surface* loadImage(std::string name)
 		{
 			return IMG_Load(name.c_str());
@@ -46,7 +47,7 @@ namespace utl
 				// Creator and deleter in uResource class.
 				std::shared_ptr<uResource_base> ptr(new T(name));
 				if (!ptr->load())
-					std::cout << "Error loading image: " << ptr->getName();
+					std::cout << "Error loading resource: " << ptr->getName();
 
 
 				//cast ptr to a return type and store it for later use

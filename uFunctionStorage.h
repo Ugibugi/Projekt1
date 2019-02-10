@@ -38,6 +38,7 @@ namespace utl
 	private:
 		std::unordered_map<T, std::function<void(Args...)>> _functionCalls;
 	};
+
 	template<typename T = uint32_t>
 	class uBindedFunctionStorage
 	{

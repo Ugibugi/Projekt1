@@ -1,5 +1,6 @@
 #pragma once
 #include "uFunctionStorage.h"
+#include "Utils.h"
 #include <memory>
 #include <vector>
 #include <unordered_map>
@@ -24,30 +25,33 @@ namespace utl
 		}
 		
 
-		//Read a keyboard state and call corresponding functions
-		void processKeyboard()
+		
+		
+		void processEvents()
 		{
-			//get keyboard state
-			int arraySize = 0;
-			const uint8_t* keyArray = SDL_GetKeyboardState(&arraySize);
-
-			for (auto vKey : _bindedKeys) //iterate trough VKeyCodes
+			SDL_Event e;
+			processKeyboard(); // not using SDLs events because it's smoother
+			uint32_t APP_EVENT = SDL_USEREVENT;
+			while (SDL_PollEvent(&e))
 			{
-				if (keyArray[SDL_GetScancodeFromKey(vKey)] == 1) // convert to scancode for array lookup
-					newEvent(SDL_KEYDOWN, vKey);
-				else
-					newEvent(SDL_KEYUP, vKey);
+				if (e.type == APP_EVENT)
+				{
+					newEvent(APP_EVENT, NULL, &e);
+					continue;
+				}
+				switch (e.type)
+				{
+				default:
+					newEvent(e.type, NULL);
+					break;
+				}
 			}
-				
-
-			//save keyboard state for future reference// only good for "momentary" triggers
-			/*_prevKeyboardState.reset(new uint8_t[arraySize]);
-			std::memcpy(_prevKeyboardState.get(), keyArray, arraySize);*/ 	
 		}
-		void newEvent(uint32_t type_id, uint32_t event_id)
+		//function to report new events to handle
+		void newEvent(uint32_t type_id, uint32_t event_id, SDL_Event* arg=nullptr)
 		{
 			if (_eventHandlers.count(type_id) == 1)
-				_eventHandlers.at(type_id).Call(event_id);
+				_eventHandlers.at(type_id).Call(event_id,arg);
 		}
 
 		~uInputHandler();
@@ -55,8 +59,29 @@ namespace utl
 	private:
 		std::unique_ptr<uint8_t> _prevKeyboardState;
 		std::vector<uint32_t> _bindedKeys;
-		std::unordered_map<uint32_t, uFunctionStorage<>> _eventHandlers;
+		std::unordered_map<uint32_t, uFunctionStorage<uint32_t,SDL_Event*>> _eventHandlers;
 
+		//helper functions
+		//Read a keyboard state and call corresponding functions
+		void processKeyboard()
+		{
+			//get keyboard state
+			int arraySize = 0;
+			const uint8_t* keyArray = SDL_GetKeyboardState(&arraySize);
+			
+			for (auto vKey : _bindedKeys) //iterate trough VKeyCodes
+			{
+				if (keyArray[SDL_GetScancodeFromKey(vKey)] == 1) // convert to scancode for array lookup
+					newEvent(SDL_KEYDOWN, vKey);
+				else
+					newEvent(SDL_KEYUP, vKey);
+			}
+
+
+			//save keyboard state for future reference// only good for "momentary" triggers
+			/*_prevKeyboardState.reset(new uint8_t[arraySize]);
+			std::memcpy(_prevKeyboardState.get(), keyArray, arraySize);*/
+		}
 	};
 
 }

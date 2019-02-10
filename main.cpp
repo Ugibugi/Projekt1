@@ -46,20 +46,13 @@ int main(int argc, char* argv[])
 
 	
 	utl::uDisplayManager::init(&Game_Renderer);
-
+	uint32_t Id = SDL_RegisterEvents(1);
+	assert(Id == SDL_USEREVENT);
 	Game game(Game_Window);
 	game.load();
 	SDL_Event e;
 	while (!game.quit)
 	{
-		
-		while (SDL_PollEvent(&e) != 0)
-		{
-			if (e.type == SDL_QUIT)
-			{
-				game.quit = true;
-			}	
-		}
 
 		game.tick();
 		utl::uDisplayManager::draw();
