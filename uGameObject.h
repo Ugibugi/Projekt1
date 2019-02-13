@@ -36,8 +36,9 @@ namespace utl
 		{
 			_commonTarget = t;
 		}
+		uTarget& Target() { return _commonTarget; }
 		
-	private:
+	protected:
 		
 		uTarget _commonTarget;
 

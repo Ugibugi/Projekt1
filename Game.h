@@ -44,6 +44,7 @@ class Game
 		GamePlayer()
 		{
 			GameObject::PT::_groupId = PLAYER_CLASS;
+			GameObject::PT::solid = false;
 		}
 	};
 	class GameLaser : public GameObject
@@ -90,8 +91,8 @@ public:
 					invaders[i][j].setImage("res/SPACEA1.png");
 					break;
 				}
-				invaders[i][j].DT::setWH(ColWidth - 10, RowHeight - 5);
-				invaders[i][j].DT::setXY((j)*(ColWidth + Padding), (i + 1)*(RowHeight + Padding));
+				invaders[i][j].Target().setWH(ColWidth - 10, RowHeight - 5);
+				invaders[i][j].Target().setXY((j)*(ColWidth + Padding), (i + 1)*(RowHeight + Padding));
 				utl::uDisplayManager::loadObject(&invaders[i][j]);
 				physicsManager.addObject(&invaders[i][j]);
 			}
@@ -99,25 +100,26 @@ public:
 
 		//Initialise other display objects
 		player.setImage("res/PLAYER.png");
-		player.DT::setWH(ColWidth, RowHeight);
+		player.Target().setWH(ColWidth, RowHeight);
 		utl::uDisplayManager::loadObject(&player);
-		player.DT::setXY(invaders.front().back().DT::getTarget()->x, invaders.back().back().DT::getTarget()->y + procentH(25));
+		player.Target().setXY(invaders.front().back().Target().x, invaders.back().back().Target().y + procentH(25));
 
 		laser.setImage("res/LASER.png");
 		laser.setDefaultWH();
 		laser.DT::setXY(&player);
 		laser.DT::active = false;
 		utl::uDisplayManager::loadObject(&laser);
+		physicsManager.addObject(&laser);
 
 		//define keymappings
 		handler.on(SDL_KEYDOWN, SDLK_LEFT, [this](SDL_Event* e) {
-			player.DT::setXY(player.DT::getTarget()->x - 10, player.DT::getTarget()->y);
-			if (player.DT::getTarget()->x < 0) player.DT::setXY(0, player.DT::getTarget()->y);
+			player.Target().setXY(player.Target().x - 10, player.Target().y);
+			if (player.Target().x < 0) player.Target().setXY(0, player.Target().y);
 		});
 
 		handler.on(SDL_KEYDOWN, SDLK_RIGHT, [this](SDL_Event* e) {
-			player.DT::setXY(player.DT::getTarget()->x + 10, player.DT::getTarget()->y);
-			if (player.DT::getTarget()->x + player.DT::getTarget()->w > displayInfo.w) player.DT::setXY(displayInfo.w - player.DT::getTarget()->w, player.DT::getTarget()->y);
+			player.Target().setXY(player.DT::getTarget()->x + 10, player.DT::getTarget()->y);
+			if (player.DT::getTarget()->x + player.DT::getTarget()->w > displayInfo.w) player.Target().setXY(displayInfo.w - player.DT::getTarget()->w, player.DT::getTarget()->y);
 		});
 
 		handler.on(SDL_KEYDOWN, SDLK_ESCAPE, [this](SDL_Event* e) {
@@ -127,7 +129,7 @@ public:
 		handler.on(SDL_KEYDOWN, SDLK_SPACE, [this](SDL_Event* e) {
 			if (!shootActive)
 			{
-				laser.DT::setXY(player.DT::getTarget()->x + player.DT::getTarget()->w / 2, player.DT::getTarget()->y);
+				laser.Target().setXY(player.DT::getTarget()->x + player.DT::getTarget()->w / 2, player.DT::getTarget()->y);
 				shootActive = true;
 			}
 		});
@@ -141,16 +143,16 @@ public:
 		});*/
 		handler.on(SDL_USEREVENT, NULL, [this](SDL_Event* e) {
 
-			auto* obj1 = (GameObject*)e->user.data1;
-			auto* obj2 = (GameObject*)e->user.data2;
+			auto* obj1 = (utl::uPhysicsObject*)e->user.data1;
+			auto* obj2 = (utl::uPhysicsObject*)e->user.data2;
 
 			if (obj1->_groupId == LASER_CLASS || obj2->_groupId == LASER_CLASS)
 			{
-				if (obj1->_groupId == INVADER_CLASS) killInvader(obj1);
-				else if (obj2->_groupId == INVADER_CLASS)killInvader(obj2);
+				/*if (obj1->_groupId == INVADER_CLASS) killInvader(obj1);
+				else if (obj2->_groupId == INVADER_CLASS)killInvader(obj2);*/
 			}
 
-			//std::cout << "HIT REGISTERED\n";
+			puts("HIT REGISTERED");
 		});
 		/*physicsManager.Handler().addCall<GameInvader, GameLaser>(INVADER_CLASS, LASER_CLASS, [this](GameInvader* inv, GameLaser* las) {
 
@@ -164,7 +166,11 @@ public:
 	}
 	void killInvader(GameObject* obj)
 	{
-
+		obj->setImage("BOOM.png");
+		delayTimer.DelayCall(50, [obj]() {
+			obj->DT::active = false;
+			obj->PT::solid = false;
+		});
 	}
 	void tick()
 	{
@@ -175,6 +181,7 @@ public:
 		}
 		handler.processEvents();
 		timer60ps.updateTimer();
+		delayTimer.updateTimer();
 	}
 	void shoot()
 	{
@@ -184,7 +191,7 @@ public:
 			laser.DT::active = false;
 			shootActive = false;
 		}
-		laser.DT::setXY(laser.DT::getTarget()->x, laser.DT::getTarget()->y - 10);
+		laser.Target().setXY(laser.Target().x, laser.Target().y - 10);
 	}
 
 	inline int procentW(int x)
@@ -207,6 +214,7 @@ public:
 	utl::uInputHandler handler;
 	utl::uPhysicsManager physicsManager;
 	utl::uSynchronisedTimer timer60ps;
+	utl::uDelayTimer delayTimer;
 	SDL_DisplayMode displayInfo;
 	bool shootActive = false;
 	bool pause= false;

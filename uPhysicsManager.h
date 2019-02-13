@@ -37,8 +37,10 @@ namespace utl
 			//Naive implementation for now
 			for (size_t i = 0; i < _objects.size(); ++i)
 			{
+				if (_objects[i]->solid == false) continue;
 				for (size_t j = i + 1; j < _objects.size(); ++j)
 				{
+					if (_objects[j]->solid == false) continue;
 					if (rectIntersect(_objects[i]->getTarget(), _objects[j]->getTarget())) //TODO ruleset customisable
 					{
 						SDL_Event e;
@@ -63,7 +65,7 @@ namespace utl
 			{
 				return min2 < max1 && max2 > min1;
 			};
-			return rangeIntersect(r1->x, r1->x + r1->w, r2->x, r2->x + r2->w) || rangeIntersect(r1->y, r1->y + r1->h, r2->y, r2->y + r2->h);
+			return rangeIntersect(r1->x, r1->x + r1->w, r2->x, r2->x + r2->w) && rangeIntersect(r1->y, r1->y + r1->h, r2->y, r2->y + r2->h);
 		}
 
 	};

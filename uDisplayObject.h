@@ -12,28 +12,20 @@ namespace utl
 		uDisplayObject() :active(true), _resName(), _target(nullptr) {}
 		uDisplayObject(std::string resName, uTarget* targetToBind = nullptr) : active(true), _resName(resName), _target(targetToBind) {}
 		inline uTarget* getTarget() { return _target; }
-		inline void setXY(int x, int y) { _target->x = x; _target->y = y; }
+
 		inline void setXY(uDisplayObject* object) { _target->x = object->getTarget()->x; _target->y = object->getTarget()->y; }
-
-		inline void setXYZ(int x, int y, int z) { _target->x = x; _target->y = y; _target->z = z; }
-		
-
-		inline void setWH(int w, int h) { _target->w = w; _target->h = h; }
 		inline void setWH(uDisplayObject* object) { _target->w = object->getTarget()->w; _target->h = object->getTarget()->h; }
-
-		inline void setWHD(int w, int h, int d) { _target->w = w; _target->h = h; _target->d = d; }
-
-
 		inline void setTarget(uTarget target) { *_target = target; }
 		inline void setNewTarget(uTarget* target) { _target = target; }
 		
 		virtual ~uDisplayObject();
 
 		bool active;
+		uTarget* _target;
 	protected:
 		std::string _resName;
 	private:
-		uTarget* _target;
+		
 		
 		
 	};

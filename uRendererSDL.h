@@ -12,11 +12,11 @@ namespace utl
 	public:
 		uSDLRenderObject() : uDisplayObject() {}
 		uSDLRenderObject(std::string resName) : uDisplayObject(resName), srcImage(_resName) {
-			setWH(getImage()->w, getImage()->h);
+			_target->setWH(getImage()->w, getImage()->h);
 		}
 		inline void setDefaultWH()
 		{
-			setWH(getImage()->w, getImage()->h);
+			_target->setWH(getImage()->w, getImage()->h);
 		}
 		inline int getTexture() { return _texture; }
 		inline void setImage(std::string&& path)
