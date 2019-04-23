@@ -35,7 +35,7 @@ namespace utl
 		//vector addition
 		uVec2D operator+(const uVec2D& u)
 		{
-			uVec2D ret(u.x + x, u.y + y);
+			const uVec2D ret(u.x + x, u.y + y);
 			return ret;
 		}
 		//vector scalar multiplication

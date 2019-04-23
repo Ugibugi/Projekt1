@@ -59,7 +59,7 @@ namespace utl
 		uCollisionHandler _collisionHandler;
 		std::unordered_map<uint32_t, std::set<uint32_t>> _groupMap;
 		uPhysicsRuleset _ruleset;
-		bool rectIntersect(uTarget* r1, uTarget* r2)
+		bool rectIntersect(const uTarget* r1, const uTarget* r2)
 		{
 			auto rangeIntersect = [](int min1, int max1, int min2, int max2)
 			{

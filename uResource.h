@@ -35,7 +35,7 @@ namespace utl
 		inline std::string getName() const { return _resName; }
 		virtual ~uResource_base()=default;
 	protected:
-		bool _isLoaded;
+		bool _isLoaded=false;
 		std::string _resName;
 	private:
 		virtual bool _load() = 0;

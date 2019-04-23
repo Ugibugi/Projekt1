@@ -36,7 +36,7 @@ class Game
 		{
 			A, B, C
 		}type;
-		bool dying;
+		bool dying=false;
 	};
 	class GamePlayer : public GameObject
 	{
@@ -67,9 +67,9 @@ public:
 	void load()
 	{
 
-		int Padding = procentW(1);
-		int RowHeight = procentH(7);
-		int ColWidth = procentW(7);
+		const int Padding = procentW(1);
+		const int RowHeight = procentH(7);
+		const int ColWidth = procentW(7);
 
 		//display grid of invaders
 		for (size_t i = 0; i < invaders.size(); i++)
@@ -143,13 +143,13 @@ public:
 		});*/
 		handler.on(SDL_USEREVENT, NULL, [this](SDL_Event* e) {
 
-			auto* obj1 = (utl::uPhysicsObject*)e->user.data1;
-			auto* obj2 = (utl::uPhysicsObject*)e->user.data2;
+			GameObject* obj1 = reinterpret_cast<GameObject*>(e->user.data1);
+			GameObject* obj2 = reinterpret_cast<GameObject*>(e->user.data2);
 
 			if (obj1->_groupId == LASER_CLASS || obj2->_groupId == LASER_CLASS)
 			{
-				/*if (obj1->_groupId == INVADER_CLASS) killInvader(obj1);
-				else if (obj2->_groupId == INVADER_CLASS)killInvader(obj2);*/
+				if (obj1->_groupId == INVADER_CLASS) killInvader(obj1);
+				else if (obj2->_groupId == INVADER_CLASS)killInvader(obj2);
 			}
 
 			puts("HIT REGISTERED");
@@ -196,14 +196,14 @@ public:
 
 	inline int procentW(int x)
 	{
-		int xx = std::clamp(x, 0, 100);
-		float onePercent = displayInfo.w / 100.0f;
+		const int xx = std::clamp(x, 0, 100);
+		const float onePercent = displayInfo.w / 100.0f;
 		return (int)onePercent * xx;
 	};
 	inline int procentH(int x)
 	{
-		int xx = std::clamp(x, 0, 100);
-		float onePercent = displayInfo.h / 100.0f;
+		const int xx = std::clamp(x, 0, 100);
+		const float onePercent = displayInfo.h / 100.0f;
 		return (int)onePercent * xx;
 	};
 

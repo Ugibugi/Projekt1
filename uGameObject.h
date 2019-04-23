@@ -11,7 +11,7 @@ namespace utl
 		static_assert(std::is_base_of<uPhysicsObject, PhysicsT>::value);
 		
 	public:
-		//TODO: get rid of this nasty hack and add unified methods for manipulating target
+		//TODO: get rid of this nasty hack and add unified methods for manipulating target ("done")
 		typedef PhysicsT PT;
 		typedef DisplayT DT;
 		//TODO RULE OF THREE
@@ -38,8 +38,7 @@ namespace utl
 		}
 		uTarget& Target() { return _commonTarget; }
 		
-	protected:
-		
+	protected:	
 		uTarget _commonTarget;
 
 	};

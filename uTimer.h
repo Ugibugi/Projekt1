@@ -39,7 +39,7 @@ namespace utl
 		~uSynchronisedTimer() = default;
 		virtual void updateTimer() override
 		{
-			auto currentTime = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now());
+			const auto currentTime = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now());
 			if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - _lastTime) > _duration)
 			{
 				_lastTime = currentTime;
@@ -69,8 +69,8 @@ namespace utl
 		}
 		virtual void updateTimer() override
 		{
-			auto currentTime = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now());
-			auto deltaTime = currentTime - _lastTime;
+			const auto currentTime = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now());
+			const auto deltaTime = currentTime - _lastTime;
 
 			for (auto call = _callList.begin(); call != _callList.end(); ++call)
 			{
