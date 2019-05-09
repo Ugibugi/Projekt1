@@ -12,7 +12,6 @@ namespace utl
 	class uInputHandler
 	{
 	public:
-		uInputHandler();
 		//add a function to handle an event defined by type of event and event id
 		//for easy SDL usage
 		template<typename... Types>
@@ -31,7 +30,7 @@ namespace utl
 		{
 			SDL_Event e;
 			processKeyboard(); // not using SDLs events because it's smoother
-			uint32_t APP_EVENT = SDL_USEREVENT;
+			const uint32_t APP_EVENT = SDL_USEREVENT;
 			while (SDL_PollEvent(&e))
 			{
 				if (e.type == APP_EVENT)
@@ -54,7 +53,6 @@ namespace utl
 				_eventHandlers.at(type_id).Call(event_id,arg);
 		}
 
-		~uInputHandler();
 	protected:
 	private:
 		std::unique_ptr<uint8_t> _prevKeyboardState;

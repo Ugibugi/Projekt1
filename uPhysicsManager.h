@@ -12,9 +12,10 @@ namespace utl
 	class uPhysicsManager
 	{
 	public:
-		uint32_t addObject(uPhysicsObject* object)
+		uint32_t addObject(uPhysicsObject* object,void* owner)
 		{
 			object->_id = _objects.size();
+			_ownerMap[object->_id] = owner;
 			_objects.push_back(object);
 
 			if (object->_groupId != 0)_groupMap[_objects.back()->_groupId].insert(object->_id);
@@ -45,8 +46,8 @@ namespace utl
 					{
 						SDL_Event e;
 						e.type = SDL_USEREVENT;
-						e.user.data1 = _objects[i];
-						e.user.data2 = _objects[j];
+						e.user.data1 = _ownerMap.at(_objects[i]->_id);
+						e.user.data2 = _ownerMap.at(_objects[j]->_id);
 						if(SDL_PushEvent(&e)<1)std::cout<<"COLLISION ERROR";
 						//_collisionHandler.call(_objects[i]->_groupId, _objects[j]->_groupId, _objects[i], _objects[j]);
 					}
@@ -58,10 +59,11 @@ namespace utl
 		std::vector<uPhysicsObject*> _objects;
 		uCollisionHandler _collisionHandler;
 		std::unordered_map<uint32_t, std::set<uint32_t>> _groupMap;
+		std::unordered_map<uint32_t, void*> _ownerMap;
 		uPhysicsRuleset _ruleset;
 		bool rectIntersect(const uTarget* r1, const uTarget* r2)
 		{
-			auto rangeIntersect = [](int min1, int max1, int min2, int max2)
+			const auto rangeIntersect = [](int min1, int max1, int min2, int max2) constexpr 
 			{
 				return min2 < max1 && max2 > min1;
 			};

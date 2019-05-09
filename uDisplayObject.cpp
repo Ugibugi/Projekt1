@@ -2,8 +2,3 @@
 #include <utility>
 
 using namespace utl;
-
-uDisplayObject::~uDisplayObject()
-{
-
-}

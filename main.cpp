@@ -50,7 +50,6 @@ int main(int argc, char* argv[])
 	assert(Id == SDL_USEREVENT);
 	Game game(Game_Window);
 	game.load();
-	SDL_Event e;
 	while (!game.quit)
 	{
 

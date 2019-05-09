@@ -67,7 +67,7 @@ namespace utl
 			_timedCalls.addCall(_idCounter, args...);
 			_idCounter++;
 		}
-		virtual void updateTimer() override
+		virtual void updateTimer()
 		{
 			const auto currentTime = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now());
 			const auto deltaTime = currentTime - _lastTime;

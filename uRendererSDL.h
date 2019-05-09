@@ -10,7 +10,7 @@ namespace utl
 	{
 		friend class uRendererSDL;
 	public:
-		uSDLRenderObject() : uDisplayObject() {}
+		uSDLRenderObject() noexcept : uDisplayObject() {}
 		uSDLRenderObject(std::string resName) : uDisplayObject(resName), srcImage(_resName) {
 			_target->setWH(getImage()->w, getImage()->h);
 		}
@@ -22,7 +22,7 @@ namespace utl
 		inline void setImage(std::string&& path)
 		{
 			srcImage.set(std::forward<std::string>(path));
-			uDisplayManager::reloadObject(static_cast<uDisplayObject*>(this));
+			uDisplayManager::reloadObject(this);
 		}
 		inline SDL_Surface* getImage()
 		{
@@ -60,7 +60,7 @@ namespace utl
 		}
 		virtual void drawObject(uDisplayObject* object)
 		{
-			auto renderObject = static_cast<RenderObject*>(object);
+			auto renderObject = dynamic_cast<RenderObject*>(object);
 
 			//put coordinate point in the middle of bounding box
 			SDL_Rect temp{ renderObject->getTarget()->x, renderObject->getTarget()->y, renderObject->getTarget()->w , renderObject->getTarget()->h };
@@ -69,7 +69,7 @@ namespace utl
 		}
 		virtual void loadObject(uDisplayObject* object)
 		{
-			static_cast<RenderObject*>(object)->_texture = loadTexture(static_cast<RenderObject*>(object)->getImage());
+			dynamic_cast<RenderObject*>(object)->_texture = loadTexture(dynamic_cast<RenderObject*>(object)->getImage());
 		}
 		virtual void reloadObject(uDisplayObject* object)
 		{
@@ -78,9 +78,9 @@ namespace utl
 		}
 		virtual void destroyObject(uDisplayObject* object)
 		{
-			destroyTexture(static_cast<RenderObject*>(object)->_texture);
+			destroyTexture(dynamic_cast<RenderObject*>(object)->_texture);
 		}
-		virtual void showScr()
+		virtual void showScr() noexcept
 		{
 			SDL_RenderPresent(_renderer);
 		}

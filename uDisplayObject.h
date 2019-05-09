@@ -9,16 +9,16 @@ namespace utl
 	class uDisplayObject
 	{
 	public:
-		uDisplayObject() :active(true), _resName(), _target(nullptr) {}
+		uDisplayObject() noexcept :active(true), _resName(), _target(nullptr) {}
 		uDisplayObject(std::string resName, uTarget* targetToBind = nullptr) : active(true), _resName(resName), _target(targetToBind) {}
-		inline uTarget* getTarget() { return _target; }
+		inline uTarget* getTarget() noexcept { return _target; }
 
 		inline void setXY(uDisplayObject* object) { _target->x = object->getTarget()->x; _target->y = object->getTarget()->y; }
 		inline void setWH(uDisplayObject* object) { _target->w = object->getTarget()->w; _target->h = object->getTarget()->h; }
 		inline void setTarget(uTarget target) { *_target = target; }
 		inline void setNewTarget(uTarget* target) { _target = target; }
 		
-		virtual ~uDisplayObject();
+		virtual ~uDisplayObject()=default;
 
 		bool active;
 		uTarget* _target;

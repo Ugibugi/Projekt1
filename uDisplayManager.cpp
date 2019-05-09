@@ -8,7 +8,7 @@ uRenderer* uDisplayManager::_renderer;
 bool uDisplayManager::_initialized;
 std::unordered_set<uDisplayObject*> uDisplayManager::_loadedObjects;
 
-void uDisplayManager::init(uRenderer* renderer)
+void uDisplayManager::init(uRenderer* renderer) noexcept
 {
 
 	_renderer = renderer;

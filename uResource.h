@@ -63,39 +63,24 @@ namespace utl
 		class Handle
 		{
 		public:
-			Handle(){}
+			Handle()noexcept{}
 			Handle(std::string name) { set(name); }
-			inline void load() { __ptr->load(); }
+			inline void load() { _ptr->load(); }
 
 			//call according uResourceManager::get() method which will return given type of resource and with given Id
-			inline void set(std::string name) { __ptr = uResourceManager::get<this_t>(name); }
+			inline void set(std::string name) { _ptr = uResourceManager::get<this_t>(name); }
 
 			inline  T* get() const
 			{
-				if (!(__ptr->isLoaded()))
-					__ptr->load();
-				return __ptr->_resource;
+				if (!(_ptr->isLoaded()))
+					_ptr->load();
+				return _ptr->_resource;
 			}
 		private:
-			std::shared_ptr<this_t> __ptr;
+			std::shared_ptr<this_t> _ptr;
 		};
 	};
 	
 	//uResource<SDL_Surface>::Handle image; //target way of using 
 	//image.set("xd.bmp");
-
-	/*OLDtemplate<>
-	class uResource<SDL_Surface> : public uResource_base
-	{
-	private:
-		virtual void _load() { _resource =  uResourceManager::loadImage(_resName); }
-		virtual void _unload() { SDL_FreeSurface(_resource); }
-		SDL_Surface* _resource;
-	};OLD*/
-
-	/*
-		typedef uResource<SDL_Surface,uResourceManager::loadImage,SDL_FreeSurface> Image_t
-		Image_t::Handle image;
-		image.set("xd.bmp");
-	*/
 }

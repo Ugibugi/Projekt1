@@ -12,10 +12,10 @@ namespace utl
 		friend class uDisplayObject;
 	public:
 		
-		static void init(uRenderer* renderer);
+		static void init(uRenderer* renderer) noexcept;
 	
 		static void uDisplayManager::loadObject(uDisplayObject* object);
-		static inline uRenderer* getRenderer() { return _renderer; }
+		static inline uRenderer* getRenderer() noexcept { return _renderer; }
 		static void draw();
 		static void close();
 		static void clearObjects();

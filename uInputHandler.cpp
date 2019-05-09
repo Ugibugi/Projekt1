@@ -2,11 +2,3 @@
 
 using namespace utl;
 
-uInputHandler::uInputHandler()
-{
-}
-
-
-uInputHandler::~uInputHandler()
-{
-}
