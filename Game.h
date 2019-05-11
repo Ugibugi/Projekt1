@@ -146,11 +146,20 @@ public:
 			auto obj1 = static_cast<Game::GameInvader*>(e->user.data1);
 			auto obj2 = static_cast<Game::GameInvader*>(e->user.data2);
 
-			if (obj1->Phys._groupId == LASER_CLASS || obj2->Phys._groupId == LASER_CLASS)
+			if (obj1->Phys._groupId == INVADER_CLASS && obj2->Phys._groupId == LASER_CLASS)
 			{
-				if (obj1->Phys._groupId == INVADER_CLASS) killInvader(obj1);
-				else if (obj2->Phys._groupId == INVADER_CLASS)killInvader(obj2);
+				killInvader(obj1);
+				laser.Disp.active = false;
+				shootActive = false;
+				
 			}
+			else if (obj2->Phys._groupId == INVADER_CLASS && obj1->Phys._groupId == LASER_CLASS)
+			{
+				killInvader(obj2);
+				laser.Disp.active = false;
+				shootActive = false;
+			}
+
 
 			puts("HIT REGISTERED");
 		});
@@ -167,9 +176,9 @@ public:
 	void killInvader(GameObject* obj)
 	{
 		obj->Disp.setImage("res/BOOM.png");
-		delayTimer.DelayCall(50, [obj]() {
+		obj->Phys.solid = false;
+		delayTimer.DelayCall(250, [obj]() {
 			obj->Disp.active = false;
-			obj->Phys.solid = false;
 		});
 	}
 	void tick()
