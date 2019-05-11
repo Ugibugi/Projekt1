@@ -56,12 +56,12 @@ namespace utl
 	{
 		struct DelayedCall
 		{
-			uint32_t milisecondsLeft;
+			int32_t milisecondsLeft;
 			uint32_t callId;
 		};
 	public:
 		template<typename... Types>
-		void DelayCall(uint32_t delay, Types... args)
+		void DelayCall(int32_t delay, Types... args)
 		{
 			_callList.push_back({ delay,_idCounter });
 			_timedCalls.addCall(_idCounter, args...);
@@ -71,7 +71,7 @@ namespace utl
 		{
 			const auto currentTime = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now());
 			const auto deltaTime = currentTime - _lastTime;
-
+			_lastTime = currentTime;
 			for (auto call = _callList.begin(); call != _callList.end(); ++call)
 			{
 				call->milisecondsLeft -= deltaTime.count();
@@ -79,7 +79,8 @@ namespace utl
 				{
 					_timedCalls.Call(call->callId);
 					_timedCalls.removeCall(call->callId);
-					_callList.erase(call);
+					call = _callList.erase(call);
+					if (call == _callList.end()) break;
 				}
 			}
 		}
