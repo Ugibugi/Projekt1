@@ -14,7 +14,7 @@ namespace utl
 		
 		static void init(uRenderer* renderer) noexcept;
 	
-		static void uDisplayManager::loadObject(uDisplayObject* object);
+		static void loadObject(uDisplayObject* object);
 		static inline uRenderer* getRenderer() noexcept { return _renderer; }
 		static void draw();
 		static void close();
