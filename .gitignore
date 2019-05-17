@@ -23,7 +23,7 @@
 *.lib
 
 # Executables
-*.exe
+#*.exe
 *.out
 *.app
 
@@ -91,3 +91,6 @@ Debug/Projekt1.res
 *.idb
 x64/Debug/Projekt1.res
 *.config
+*.ilk
+*.res
+Debug/RCa13904
