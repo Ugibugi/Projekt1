@@ -33,8 +33,7 @@ namespace utl
 		uSynchronisedTimer(uint32_t miliseconds)
 			:_duration(miliseconds)
 		{
-			//_lastTime.time_since_epoch() = _lastTime.time_since_epoch() - (_lastTime.time_since_epoch() % miliseconds); 
-			//left side ist const so it has no effect. ( ? ) TODO examine this
+			_lastTime -= std::chrono::milliseconds(_lastTime.time_since_epoch().count() % miliseconds);
 		}
 		~uSynchronisedTimer() = default;
 		virtual void updateTimer() override

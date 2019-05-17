@@ -36,7 +36,7 @@ public:
 		{
 			A, B, C
 		}type;
-		bool dying=false;
+		bool dead=false;
 	};
 	class GamePlayer : public GameObject
 	{
@@ -58,7 +58,7 @@ public:
 
 
 
-	Game(SDL_Window* window) : timer60ps(17) //17ms ~~ 60 Hz
+	Game(SDL_Window* window) : timer1ps(1000),timer60ps(17) //17ms ~~ 60 Hz
 	{
 		//Get viewport dismensions
 		SDL_GetWindowSize(window, &displayInfo.w, &displayInfo.h);
@@ -143,43 +143,56 @@ public:
 		});*/
 		handler.on(SDL_USEREVENT, NULL, [this](SDL_Event* e) {
 
-			auto obj1 = static_cast<Game::GameInvader*>(e->user.data1);
-			auto obj2 = static_cast<Game::GameInvader*>(e->user.data2);
+			auto obj1 = static_cast<Game::GameObject*>(e->user.data1);
+			auto obj2 = static_cast<Game::GameObject*>(e->user.data2);
 
 			if (obj1->Phys._groupId == INVADER_CLASS && obj2->Phys._groupId == LASER_CLASS)
 			{
-				killInvader(obj1);
+				killInvader(static_cast<Game::GameInvader*>(obj1));
 				laser.Disp.active = false;
 				shootActive = false;
 				
 			}
 			else if (obj2->Phys._groupId == INVADER_CLASS && obj1->Phys._groupId == LASER_CLASS)
 			{
-				killInvader(obj2);
+				killInvader(static_cast<Game::GameInvader*>(obj2));
 				laser.Disp.active = false;
 				shootActive = false;
 			}
-
-
-			puts("HIT REGISTERED");
 		});
-		/*physicsManager.Handler().addCall<GameInvader, GameLaser>(INVADER_CLASS, LASER_CLASS, [this](GameInvader* inv, GameLaser* las) {
-
-			std::cout << "HIT REGISTERED\n";
-
-		});*/
 		timer60ps.addCall(1, [this]() { physicsManager.Update(17); });
-
+		timer1ps.addCall(1, [this]() { updateInvaders(); });
 
 
 	}
-	void killInvader(GameObject* obj)
+	void updateInvaders()
+	{
+		//get max X
+		int stepSize = 10;
+		int spaceX = displayInfo.w - invaders[5][11].Target().x - invaders[5][11].Target().w;
+		if (spaceX < stepSize) invDir = true;
+		if (spaceX > stepSize * 6) invDir = false;
+		for (auto& row : invaders)
+		{
+			for (auto& inv : row)
+			{
+				if (!inv.dead)
+				{
+					
+				}
+				invDir ? inv.Target().x -= stepSize  : inv.Target().x += stepSize;
+			}
+		}
+	}
+	void killInvader(GameInvader* obj)
 	{
 		obj->Disp.setImage("res/BOOM.png");
 		obj->Phys.solid = false;
+		obj->dead = true;
 		delayTimer.DelayCall(250, [obj]() {
 			obj->Disp.active = false;
 		});
+		
 	}
 	void tick()
 	{
@@ -190,6 +203,7 @@ public:
 		}
 		handler.processEvents();
 		timer60ps.updateTimer();
+		timer1ps.updateTimer();
 		delayTimer.updateTimer();
 	}
 	void shoot()
@@ -223,11 +237,12 @@ public:
 	utl::uInputHandler handler;
 	utl::uPhysicsManager physicsManager;
 	utl::uSynchronisedTimer timer60ps;
+	utl::uSynchronisedTimer timer1ps;
 	utl::uDelayTimer delayTimer;
 	SDL_DisplayMode displayInfo;
 	bool shootActive = false;
 	bool pause= false;
-	
+	bool invDir = false; // false - right // true - left
 
 	/*void setRowHeight(int newVal)
 	{
