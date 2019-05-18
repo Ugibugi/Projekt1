@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <queue>
 #include "uFunctionStorage.h"
 #include "uResource.h"
 #include "uDisplayManager.h"
@@ -36,6 +37,7 @@ public:
 			A, B, C
 		}type;
 		bool dead=false;
+		std::queue<std::string> frames;
 	};
 	class GamePlayer : public GameObject
 	{
@@ -80,14 +82,21 @@ public:
 				case 0:
 				case 1:
 					invaders[i][j].Disp.setImage("res/SPACEC1.png");
+					invaders[i][j].frames.push("res/SPACEC2.png");
+					invaders[i][j].frames.push("res/SPACEC1.png");
 					break;
 				case 2:
 				case 3:
 					invaders[i][j].Disp.setImage("res/SPACEB1.png");
+					invaders[i][j].frames.push("res/SPACEB2.png");
+					invaders[i][j].frames.push("res/SPACEB1.png");
+					break;
 					break;
 				case 4:
 				case 5:
 					invaders[i][j].Disp.setImage("res/SPACEA1.png");
+					invaders[i][j].frames.push("res/SPACEA2.png");
+					invaders[i][j].frames.push("res/SPACEA1.png");
 					break;
 				}
 				invaders[i][j].Target().setWH(ColWidth - 10, RowHeight - 5);
@@ -177,7 +186,10 @@ public:
 			{
 				if (!inv.dead)
 				{
-					
+					auto texName = inv.frames.front();
+					inv.Disp.setImage(texName);
+					inv.frames.push(texName);
+					inv.frames.pop();
 				}
 				invDir ? inv.Target().x -= stepSize  : inv.Target().x += stepSize;
 			}
