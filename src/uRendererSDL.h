@@ -24,6 +24,11 @@ namespace utl
 			srcImage.set(std::forward<std::string>(path));
 			uDisplayManager::reloadObject(this);
 		}
+		inline void setImage(std::string& path)
+		{
+			srcImage.set(path);
+			uDisplayManager::reloadObject(this);
+		}
 		inline SDL_Surface* getImage()
 		{
 			return srcImage.get();
@@ -32,11 +37,17 @@ namespace utl
 		int _texture;
 		uImage srcImage;
 	};
+	struct uRendererSDLTextureEntry
+	{
+		SDL_Texture* tex;
+		SDL_Surface* surf;
+		uint32_t ref_count;
+	};
 	class uRendererSDL : public uRenderer
 	{
 	public:
-		typedef  uSDLRenderObject RenderObject;
-		
+		typedef uSDLRenderObject			RenderObject;
+		typedef	uRendererSDLTextureEntry	TextureEntry;
 
 		uRendererSDL(SDL_Window* window, int index, uint32_t flags)
 		{
@@ -50,13 +61,28 @@ namespace utl
 		virtual int loadTexture(SDL_Surface* image)
 		{
 			//access by SDL_Surface
-			_textures.push_back(SDL_CreateTextureFromSurface(_renderer, image));
-			return _textures.size() - 1;
+			if (_surfIndexes.count(image) > 0)
+			{
+				_textures.at(_surfIndexes.at(image)).ref_count++;
+				return _surfIndexes.at(image);
+			}
+			else
+			{
+				_textures.push_back({ SDL_CreateTextureFromSurface(_renderer, image), image, 1});
+				_surfIndexes[image] = _textures.size() - 1;
+				return _textures.size() - 1;
+			}
+			
 			//make entry trough SDL_surface and get new int
 		}
 		virtual void destroyTexture(int texId)
 		{
-			SDL_DestroyTexture(_textures.at(texId));
+			_textures.at(texId).ref_count--;
+			if (_textures.at(texId).ref_count == 0)
+			{
+				SDL_DestroyTexture(_textures.at(texId).tex);
+				_surfIndexes.erase(_textures.at(texId).surf);
+			}
 		}
 		virtual void drawObject(uDisplayObject* object)
 		{
@@ -64,8 +90,8 @@ namespace utl
 
 			//put coordinate point in the middle of bounding box
 			SDL_Rect temp{ renderObject->getTarget()->x, renderObject->getTarget()->y, renderObject->getTarget()->w , renderObject->getTarget()->h };
-			if (SDL_RenderCopy(_renderer, _textures.at(renderObject->getTexture()), NULL, &temp) == -1)//access by int
-				std::cout << SDL_GetError();
+			if (SDL_RenderCopy(_renderer, _textures.at(renderObject->getTexture()).tex, NULL, &temp) == -1)//access by int
+				std::cout << __FILE__ << " : "<<__LINE__ <<  "[Error]: "<<  SDL_GetError() << '\n';
 		}
 		virtual void loadObject(uDisplayObject* object)
 		{
@@ -91,13 +117,18 @@ namespace utl
 		virtual ~uRendererSDL()
 		{
 			for (auto i : _textures)
-				SDL_DestroyTexture(i);
+				SDL_DestroyTexture(i.tex);
 			SDL_DestroyRenderer(_renderer);
 		}
 		bool valid=false;
 	private:
 		SDL_Renderer* _renderer;
-		std::vector<SDL_Texture*> _textures;
-		//TODO: replace vector with map
+		std::vector<TextureEntry> _textures;
+		//				^
+		//              |
+		//              +-----------+
+		//                          |
+		std::map<SDL_Surface*, uint32_t> _surfIndexes;
+		//TODO: replace vector with map ^^^ teporary solution
 	};
 };
