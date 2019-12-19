@@ -26,11 +26,11 @@ class uCollisionHandler
 {
 
 public:
-	template<typename T>
+	/*emplate<typename T>
 	void registerGroup(uint32_t groupId)
 	{
 		typeMap.insert(groupId, std::type_index(typeid(T)));
-	}
+	}*/
 	template<typename T1,typename T2>
 	void addCall(uint32_t groupId1, uint32_t groupId2, std::function<void(T1*,T2*)> fun)
 	{
