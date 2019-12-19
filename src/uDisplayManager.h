@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <SDL2/SDL.h>
 
 #include <unordered_set>
 #include "uRenderer.h"

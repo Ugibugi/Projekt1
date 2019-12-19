@@ -1,12 +1,18 @@
 #pragma once
+#ifdef __gnu_linux__
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#else
 #include <SDL.h>
 #include <SDL_image.h>
+#endif
 #include <string>
 #include <unordered_map>
 #include <memory>
 #include <type_traits>
 //#include "uResource.h"
 #include <stdexcept>
+#include <iostream>
 namespace utl
 {
 	/*

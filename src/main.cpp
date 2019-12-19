@@ -1,12 +1,21 @@
+
+#ifdef __gnu_linux__
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#else
 #include <SDL.h>
 #undef main
 #include <SDL_image.h>
+#endif
+
+
 #include <iostream>
 #include <chrono>
 #include <cmath>
 #include <cstdlib>
 #include <assert.h>
 #include <array>
+#include <cassert>
 #include "uFunctionStorage.h"
 #include "uResource.h"
 #include "uDisplayManager.h"
@@ -29,7 +38,7 @@ int main(int argc, char* argv[])
 	}
 	IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF);
 	//TTF_Init();
-	SDL_Window* Game_Window = SDL_CreateWindow("BLANK", 0,0, 1000,1000, SDL_WINDOW_SHOWN);
+	SDL_Window* Game_Window = SDL_CreateWindow("BLANK", 0,0, 800,600, SDL_WINDOW_SHOWN);
 	end = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_seconds = end - start;
 	if (Game_Window == nullptr)
