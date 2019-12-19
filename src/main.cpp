@@ -1,11 +1,12 @@
 #include <SDL.h>
+#undef main
 #include <SDL_image.h>
 #include <iostream>
 #include <chrono>
 #include <cmath>
 #include <cstdlib>
+#include <assert.h>
 #include <array>
-#include <q3.h>
 #include "uFunctionStorage.h"
 #include "uResource.h"
 #include "uDisplayManager.h"
@@ -44,7 +45,6 @@ int main(int argc, char* argv[])
 		SDL_DestroyWindow(Game_Window);
 	}
 
-	
 	utl::uDisplayManager::init(&Game_Renderer);
 	uint32_t Id = SDL_RegisterEvents(1);
 	assert(Id == SDL_USEREVENT);

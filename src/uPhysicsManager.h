@@ -3,7 +3,7 @@
 #include <set>
 #include <memory>
 #include "uPhysicsObject.h"
-#include "uCollisionHandler.h"
+
 namespace utl
 {
 
@@ -21,7 +21,7 @@ namespace utl
 			return object->_id;
 			//_collisionHandler.registerGroup<>(object->_groupId);
 		}
-		uCollisionHandler& Handler() noexcept { return _collisionHandler; }
+		//uCollisionHandler& Handler() noexcept { return _collisionHandler; }
 		uPhysicsRuleset& Ruleset() noexcept { return _ruleset; }
 
 		void Update(double timeUnits)
@@ -56,7 +56,7 @@ namespace utl
 
 	private:
 		std::vector<uPhysicsObject*> _objects;
-		uCollisionHandler _collisionHandler;
+		//uCollisionHandler _collisionHandler;
 		std::unordered_map<uint32_t, std::set<uint32_t>> _groupMap;
 		std::unordered_map<uint32_t, void*> _ownerMap;
 		uPhysicsRuleset _ruleset;

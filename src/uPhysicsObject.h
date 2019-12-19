@@ -2,7 +2,6 @@
 #include <memory>
 #include "uTarget.h"
 #include "uMath.h"
-#include "SDL.h"
 namespace utl
 {
 

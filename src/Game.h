@@ -34,7 +34,7 @@ public:
 		}
 		enum
 		{
-			A, B, C
+			A_TYPE, B_TYPE, C_TYPE
 		}type;
 		bool dead=false;
 		std::queue<std::string> frames;
@@ -69,8 +69,8 @@ public:
 	{
 
 		const int Padding = procentW(1);
-		const int RowHeight = procentH(7);
-		const int ColWidth = procentW(7);
+		const int RowHeight = procentH(5);
+		const int ColWidth = procentW(5);
 
 		//display grid of invaders
 		for (size_t i = 0; i < invaders.size(); i++)
@@ -84,12 +84,14 @@ public:
 					invaders[i][j].Disp.setImage("res/SPACEC1.png");
 					invaders[i][j].frames.push("res/SPACEC2.png");
 					invaders[i][j].frames.push("res/SPACEC1.png");
+					invaders[i][j].type = GameInvader::C_TYPE;
 					break;
 				case 2:
 				case 3:
 					invaders[i][j].Disp.setImage("res/SPACEB1.png");
 					invaders[i][j].frames.push("res/SPACEB2.png");
 					invaders[i][j].frames.push("res/SPACEB1.png");
+					invaders[i][j].type = GameInvader::B_TYPE;
 					break;
 					break;
 				case 4:
@@ -97,6 +99,7 @@ public:
 					invaders[i][j].Disp.setImage("res/SPACEA1.png");
 					invaders[i][j].frames.push("res/SPACEA2.png");
 					invaders[i][j].frames.push("res/SPACEA1.png");
+					invaders[i][j].type = GameInvader::A_TYPE;
 					break;
 				}
 				invaders[i][j].Target().setWH(ColWidth - 10, RowHeight - 5);
@@ -110,7 +113,7 @@ public:
 		player.Disp.setImage("res/PLAYER.png");
 		player.Target().setWH(ColWidth, RowHeight);
 		utl::uDisplayManager::loadObject(&player.Disp);
-		player.Target().setXY(invaders.front().back().Target().x, invaders.back().back().Target().y + procentH(25));
+		player.Target().setXY(invaders.front().back().Target().x, invaders.back().back().Target().y + procentH(50));
 
 		laser.Disp.setImage("res/LASER.png");
 		laser.Disp.setDefaultWH();
@@ -144,11 +147,18 @@ public:
 		handler.on(SDL_QUIT, NULL, [this](SDL_Event* e) {
 			quit = true;
 		});
-		/*handler.on(SDL_MOUSEMOTION, NULL, [this](SDL_Event* e) {
+		handler.on(SDL_MOUSEMOTION, NULL, [this](SDL_Event* e) {
 			int x, y;
 			SDL_GetMouseState(&x, &y);
-			player.PT::getTarget()->x = x;
-		});*/
+			player.Disp.getTarget()->x = x;
+		});
+		handler.on(SDL_MOUSEBUTTONDOWN, NULL, [this](SDL_Event* e) {
+			if (!shootActive)
+			{
+				laser.Target().setXY(player.Disp.getTarget()->x + player.Disp.getTarget()->w / 2, player.Disp.getTarget()->y);
+				shootActive = true;
+			}
+		});
 		handler.on(SDL_USEREVENT, NULL, [this](SDL_Event* e) {
 
 			auto obj1 = static_cast<Game::GameObject*>(e->user.data1);
